@@ -3,9 +3,7 @@ package ru.spring.app.engine.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Data
@@ -15,20 +13,19 @@ import java.util.Date;
 public class Users {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, columnDefinition = "serial")
     private int id;
-    private boolean is_moderator;
-    private Date reg_time;
+    @Column(nullable = false)
+    private boolean isModerator;
+    @Column(nullable = false)
+    private Date regTime;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String password;
     private String code;
+    @Column(columnDefinition = "text")
     private String photo;
 
-    public Users(boolean is_moderator, Date reg_time, String name, String password, String code, String photo) {
-        this.is_moderator = is_moderator;
-        this.reg_time = reg_time;
-        this.name = name;
-        this.password = password;
-        this.code = code;
-        this.photo = photo;
-    }
 }

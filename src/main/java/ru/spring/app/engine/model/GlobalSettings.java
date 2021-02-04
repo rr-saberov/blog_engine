@@ -3,24 +3,23 @@ package ru.spring.app.engine.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @Entity
 @NoArgsConstructor
 @Table(name = "global_settings")
 public class GlobalSettings {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, columnDefinition = "serial")
     private int id;
+    @Column(nullable = false)
     private String code;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String value;
 
-    public GlobalSettings(String code, String name, String value) {
-        this.code = code;
-        this.name = name;
-        this.value = value;
-    }
 }
