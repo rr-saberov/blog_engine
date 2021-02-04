@@ -3,10 +3,7 @@ package ru.spring.app.engine.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Data
@@ -14,21 +11,19 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "post_votes")
 public class PostVotes {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, columnDefinition = "serial")
     private int id;
-    @Column
-    private int user_id;
-    @Column
-    private int post_id;
-    @Column
+    @Column(nullable = false)
+    private int userId;
+    @Column(nullable = false)
+    private int postId;
+    @Column(nullable = false)
     private Date time;
-    @Column
+    @Column(nullable = false)
     private boolean value;
 
-    public PostVotes(int user_id, int post_id, Date time, boolean value) {
-        this.user_id = user_id;
-        this.post_id = post_id;
-        this.time = time;
-        this.value = value;
-    }
+
 }
