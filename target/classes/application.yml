@@ -7,5 +7,4 @@ spring:
   jpa:
     properties:
       hibernate:
-#        dialect: org.hibernate.dialect.PostgreSQL131Dialect
         spring.jpa.hibernate.ddl-auto: update

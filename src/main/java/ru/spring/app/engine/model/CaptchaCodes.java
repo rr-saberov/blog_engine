@@ -22,5 +22,4 @@ public class CaptchaCodes {
     private boolean code;
     @Column(nullable = false)
     private boolean secretCode;
-
 }
