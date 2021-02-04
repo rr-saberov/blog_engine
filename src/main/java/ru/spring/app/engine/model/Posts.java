@@ -19,7 +19,8 @@ public class Posts {
     @Column(nullable = false)
     private boolean isActive;
     @Column(nullable = false)
-    private Enum moderationStatus;
+    @Enumerated(EnumType.ORDINAL)
+    private ModerationStatus moderationStatus;
     private int moderatorId;
     @Column(nullable = false)
     private int userId;
@@ -30,4 +31,11 @@ public class Posts {
     @Column(nullable = false)
     private int viewCount;
 
+    @OneToOne
+    @JoinColumn(name = "users_id")
+    private Users moderId;
+
+    @OneToMany
+    @JoinColumn(name = "users_id")
+    private Users usersId;
 }

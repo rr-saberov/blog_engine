@@ -25,6 +25,14 @@ public class PostComments {
     private Date time;
     @Column(nullable = false, columnDefinition = "text")
     private String text;
+
+    @OneToOne
+    @JoinColumn(name = "posts_id")
+    private Posts postsId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users usersId;
 }
 
 

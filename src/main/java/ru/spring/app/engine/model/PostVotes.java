@@ -25,5 +25,12 @@ public class PostVotes {
     @Column(nullable = false)
     private boolean value;
 
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private Users usersId;
+
+    @OneToOne
+    @JoinColumn(name = "posts_id")
+    private Posts postsId;
 
 }

@@ -20,4 +20,11 @@ public class Tag2Post {
     @Column(nullable = false)
     private int tagId;
 
+    @OneToOne
+    @JoinColumn(name = "posts_id")
+    private Posts postsId;
+
+    @OneToOne
+    @JoinColumn(name = "tag_id")
+    private Tags tagsId;
 }
