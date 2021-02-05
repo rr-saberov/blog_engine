@@ -19,6 +19,17 @@
         <java.version>11</java.version>
     </properties>
 
+    <plugins>
+        <plugin>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-maven-plugin</artifactId>
+            <version>3.4.1</version>
+            <configuration>
+                <propertyFile>src/main/resources/liquibase.properties</propertyFile>
+            </configuration>
+        </plugin>
+    </plugins>
+
 
     <dependencies>
         <dependency>
@@ -109,7 +120,5 @@
             <artifactId>liquibase-core</artifactId>
             <version>3.4.1</version>
         </dependency>
-
     </dependencies>
-
 </project>
