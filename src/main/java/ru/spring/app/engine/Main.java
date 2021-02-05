@@ -10,11 +10,4 @@ public class Main {
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }
-
-    @Bean
-    public SpringLiquibase liquibase() {
-        SpringLiquibase liquibase = new SpringLiquibase();
-        liquibase.setChangeLog("classpath:src/main/resources/databaseChangeLog.xml");
-        return liquibase;
-    }
 }
