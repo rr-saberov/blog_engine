@@ -8,3 +8,5 @@ spring:
     properties:
       hibernate:
         spring.jpa.hibernate.ddl-auto: update
+
+  liquibase.change-log=classpath: liquibase-changeLog:databaseChangeLog.xml
