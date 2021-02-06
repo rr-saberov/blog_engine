@@ -8,13 +8,35 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
 
-<!--    <changeSet author="John" id="someUniqueId">-->
-<!--        <addColumn tableName="users">-->
-<!--            <column name="address" type="varchar(255)" />-->
-<!--        </addColumn>-->
-<!--    </changeSet>-->
 
-    <changeSet id="" author="">
-        <
+    <changeSet id="someId" author="Ruslan">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="integer">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <addColumn tableName="users">
+            <column name="is_moderator" type="boolean"/>
+        </addColumn>
+        <addColumn tableName="users">
+            <column name="reg_time" type="date"/>
+        </addColumn>
+        <addColumn tableName="users">
+            <column name="name" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="users">
+            <column name="email" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="users">
+            <column name="password" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="users">
+            <column name="code" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="users">
+            <column name="photo" type="text"/>
+        </addColumn>
+
     </changeSet>
 </databaseChangeLog>
