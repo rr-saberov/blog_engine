@@ -19,7 +19,7 @@ public class Posts {
     @Column(nullable = false)
     private boolean isActive;
     @Column(nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private ModerationStatus moderationStatus;
     private int moderatorId;
     @Column(nullable = false)
