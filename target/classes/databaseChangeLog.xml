@@ -27,6 +27,16 @@
             <column name="photo" type="text"/>
         </addColumn>
 
+        <insert tableName="users">
+            <column name="id" value="1"/>
+            <column name="is_moderator" value="true"/>
+            <column name="name" value="Denis"/>
+            <column name="email" value="denis@gmail.com"/>
+            <column name="password" value="12345"/>
+            <column name="code" value="556677"/>
+            <column name="photo" value="https://yandex.ru/photoDenisa"/>
+        </insert>
+
 
         <createTable tableName="post_votes">
             <column autoIncrement="true" name="id" type="integer"/>
@@ -42,6 +52,13 @@
             <column name="time" type="date"/>
             <column name="value" type="boolean"/>
         </addColumn>
+
+        <insert tableName="posts_votes">
+            <column name="id" value="1"/>
+<!--            <column name="user_id" value="1"/>-->
+<!--            <column name="post_id" value="1"/>-->
+            <column name="value" value="true"/>
+        </insert>
 
 
         <createTable tableName="posts">
@@ -63,6 +80,15 @@
             <column name="view_count" type="integer"/>
         </addColumn>
 
+        <insert tableName="posts">
+            <column name="id" value="1"/>
+            <column name="is_active" value="true"/>
+<!--            <column name="moderator_id" value="1"/>-->
+<!--            <column name="user_id" value="1"/>-->
+            <column name="text" value="test_text"/>
+            <column name="view_count" value="55"/>
+        </insert>
+
         <createTable tableName="tags">
             <column autoIncrement="true" name="id" type="integer"/>
             <column name="name" type="varchar(255)"/>
@@ -78,6 +104,13 @@
             </column>
         </createTable>
 
+        <insert tableName="tags">
+            <column name="id" value="1"/>
+            <column name="name" value="tag name"/>
+<!--            <column name="post_id" value="1"/>-->
+<!--            <column name="tag_id" value="1"/>-->
+        </insert>
+
         <createTable tableName="post_comments">
             <column autoIncrement="true" name="id" type="integer"/>
             <column name="parent_id" type="integer"/>
@@ -91,6 +124,14 @@
             <column name="text" type="text"/>
         </createTable>
 
+        <insert tableName="post_comments">
+            <column name="id" value="1"/>
+<!--            <column name="parent_id" value="1"/>-->
+<!--            <column name="post_id" value="1"/>-->
+<!--            <column name="user_id" value="1"/>-->
+            <column name="text" value="text"/>
+        </insert>
+
         <createTable tableName="captcha_codes">
             <column autoIncrement="true" name="id" type="integer"/>
             <column name="time" type="date"/>
@@ -98,11 +139,24 @@
             <column name="secret_code" type="boolean"/>
         </createTable>
 
+        <insert tableName="captcha_codes">
+            <column name="id" value="1"/>
+            <column name="code" value="true"/>
+            <column name="secret_code" value="true"/>
+        </insert>
+
         <createTable tableName="global_settings">
             <column autoIncrement="true" name="id" type="integer"/>
             <column name="code" type="varchar(255)"/>
             <column name="value" type="varchar(255)"/>
         </createTable>
+
+        <insert tableName="global_settings">
+            <column name="id" value="1"/>
+            <column name="code" value="some code"/>
+            <column name="value" value="some value"/>
+        </insert>
+
 
     </changeSet>
 </databaseChangeLog>

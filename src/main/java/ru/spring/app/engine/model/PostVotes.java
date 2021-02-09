@@ -25,8 +25,8 @@ public class PostVotes {
     @Column(nullable = false)
     private boolean value;
 
-    @OneToMany
-    @JoinColumn(name = "user_id")
+    @ManyToOne
+    @JoinColumn(name = "users_id")
     private Users usersId;
 
     @OneToOne

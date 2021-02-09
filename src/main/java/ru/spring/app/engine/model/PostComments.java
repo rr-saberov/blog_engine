@@ -30,8 +30,8 @@ public class PostComments {
     @JoinColumn(name = "posts_id")
     private Posts postsId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne
+    @JoinColumn(name = "users_id")
     private Users usersId;
 }
 

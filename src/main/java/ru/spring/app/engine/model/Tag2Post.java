@@ -25,6 +25,6 @@ public class Tag2Post {
     private Posts postsId;
 
     @OneToOne
-    @JoinColumn(name = "tag_id")
+    @JoinColumn(name = "tags_id")
     private Tags tagsId;
 }
