@@ -1,0 +1,14 @@
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/controller/ApiPostController.java
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/model/Posts.java
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/model/PostComments.java
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/controller/ApiAuthController.java
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/model/Tag2Post.java
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/model/CaptchaCodes.java
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/model/GlobalSettings.java
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/controller/DefaultController.java
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/model/ModerationStatus.java
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/model/Users.java
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/controller/ApiGeneralController.java
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/model/PostVotes.java
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/model/Tags.java
+/home/ruslan/Documents/Projects/Engine/blog_engine/src/main/java/ru/spring/app/engine/Main.java

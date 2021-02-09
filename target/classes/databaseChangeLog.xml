@@ -9,7 +9,8 @@
 
 
 
-    <changeSet id="someId" author="ruslan">
+    <changeSet id="someIds" author="ruslan">
+        <sql>CREATE TYPE mod_status AS ENUM ('NEW', 'ACCEPTED', 'DECLINED')</sql>
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="integer">
                 <constraints primaryKey="true"/>
@@ -17,15 +18,15 @@
         </createTable>
 
         <addColumn tableName="users">
-            <column name="is_moderator" type="boolean"/>        
+            <column name="is_moderator" type="boolean"/>
             <column name="reg_time" type="date"/>
             <column name="name" type="varchar(255)"/>
             <column name="email" type="varchar(255)"/>
-            <column name="password" type="varchar(255)"/>        
-            <column name="code" type="varchar(255)"/> 
+            <column name="password" type="varchar(255)"/>
+            <column name="code" type="varchar(255)"/>
             <column name="photo" type="text"/>
         </addColumn>
-        
+
 
         <createTable tableName="post_votes">
             <column autoIncrement="true" name="id" type="integer"/>
@@ -51,7 +52,8 @@
 
         <addColumn tableName="posts">
             <column name="is_active" type="boolean"/>
-            <column name="moderation_status" type="enum"/>
+
+            <column name="moderation_status" type="mod_status"/>
             <column name="moderator_id" type="integer"/>
             <column name="user_id" type="integer">
                 <constraints foreignKeyName="FK_posts_user"/>
@@ -65,7 +67,7 @@
             <column autoIncrement="true" name="id" type="integer"/>
             <column name="name" type="varchar(255)"/>
         </createTable>
-        
+
         <createTable tableName="tag2post">
             <column autoIncrement="true" name="id" type="integer"/>
             <column name="post_id" type="integer">
@@ -75,7 +77,7 @@
                 <constraints foreignKeyName="FK_tag2post_tags"/>
             </column>
         </createTable>
-        
+
         <createTable tableName="post_comments">
             <column autoIncrement="true" name="id" type="integer"/>
             <column name="parent_id" type="integer"/>
@@ -88,14 +90,14 @@
             <column name="time" type="date"/>
             <column name="text" type="text"/>
         </createTable>
-        
+
         <createTable tableName="captcha_codes">
             <column autoIncrement="true" name="id" type="integer"/>
             <column name="time" type="date"/>
             <column name="code" type="boolean"/>
             <column name="secret_code" type="boolean"/>
         </createTable>
-        
+
         <createTable tableName="global_settings">
             <column autoIncrement="true" name="id" type="integer"/>
             <column name="code" type="varchar(255)"/>
