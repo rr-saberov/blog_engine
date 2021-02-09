@@ -32,10 +32,10 @@ public class Posts {
     private int viewCount;
 
     @OneToOne
-    @JoinColumn(name = "users_id")
+    @JoinColumn(name = "moder_id")
     private Users moderId;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "users_id")
     private Users usersId;
 }
