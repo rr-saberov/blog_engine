@@ -11,4 +11,12 @@ spring:
       hibernate:
         spring.jpa.hibernate.ddl-auto: create
 
+blog:
+  title: DevPub
+  subtitle: Рассказы разработчиков
+  phone: +7 903 664-44-55
+  email: ruslan@mail.ru
+  copyright: Ruslan Saberov
+  copyrightFrom: 2005
+
 

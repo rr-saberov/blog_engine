@@ -53,7 +53,7 @@
             <column name="value" type="boolean"/>
         </addColumn>
 
-        <insert tableName="posts_votes">
+        <insert tableName="post_votes">
             <column name="id" value="1"/>
 <!--            <column name="user_id" value="1"/>-->
 <!--            <column name="post_id" value="1"/>-->
