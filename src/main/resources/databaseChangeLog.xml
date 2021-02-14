@@ -9,7 +9,7 @@
 
 
 
-    <changeSet id="someIds" author="ruslan">
+    <changeSet id="someId" author="ruslan">
         <sql>CREATE TYPE mod_status AS ENUM ('NEW', 'ACCEPTED', 'DECLINED')</sql>
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="integer">
@@ -55,8 +55,6 @@
 
         <insert tableName="post_votes">
             <column name="id" value="1"/>
-<!--            <column name="user_id" value="1"/>-->
-<!--            <column name="post_id" value="1"/>-->
             <column name="value" value="true"/>
         </insert>
 
@@ -83,8 +81,6 @@
         <insert tableName="posts">
             <column name="id" value="1"/>
             <column name="is_active" value="true"/>
-<!--            <column name="moderator_id" value="1"/>-->
-<!--            <column name="user_id" value="1"/>-->
             <column name="text" value="test_text"/>
             <column name="view_count" value="55"/>
         </insert>
@@ -107,8 +103,6 @@
         <insert tableName="tags">
             <column name="id" value="1"/>
             <column name="name" value="tag name"/>
-<!--            <column name="post_id" value="1"/>-->
-<!--            <column name="tag_id" value="1"/>-->
         </insert>
 
         <createTable tableName="post_comments">
@@ -126,9 +120,6 @@
 
         <insert tableName="post_comments">
             <column name="id" value="1"/>
-<!--            <column name="parent_id" value="1"/>-->
-<!--            <column name="post_id" value="1"/>-->
-<!--            <column name="user_id" value="1"/>-->
             <column name="text" value="text"/>
         </insert>
 
@@ -148,13 +139,26 @@
         <createTable tableName="global_settings">
             <column autoIncrement="true" name="id" type="integer"/>
             <column name="code" type="varchar(255)"/>
+            <column name="name" type="varchar(255)"/>
             <column name="value" type="varchar(255)"/>
         </createTable>
 
         <insert tableName="global_settings">
             <column name="id" value="1"/>
-            <column name="code" value="some code"/>
-            <column name="value" value="some value"/>
+            <column name="code" value="MULTIUSER_MODE"/>
+            <column name="name" value="Многопользовательский режим"/>
+            <column name="value" value="YES"/>
+
+            <column name="id" value="2"/>
+            <column name="code" value="POST_MODERATION"/>
+            <column name="name" value="Премодерация постов"/>
+            <column name="value" value="YES"/>
+
+            <column name="id" value="3"/>
+            <column name="code" value="STATISTICS_IS_PUBLIC"/>
+            <column name="name" value="Показывать всем статистику блога"/>
+            <column name="value" value="NO"/>
+
         </insert>
 
 
