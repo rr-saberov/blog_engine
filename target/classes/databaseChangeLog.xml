@@ -148,19 +148,21 @@
             <column name="code" value="MULTIUSER_MODE"/>
             <column name="name" value="Многопользовательский режим"/>
             <column name="value" value="YES"/>
+        </insert>
 
+        <insert tableName="global_settings">
             <column name="id" value="2"/>
             <column name="code" value="POST_MODERATION"/>
             <column name="name" value="Премодерация постов"/>
             <column name="value" value="YES"/>
+        </insert>
 
+        <insert tableName="global_settings">
             <column name="id" value="3"/>
             <column name="code" value="STATISTICS_IS_PUBLIC"/>
             <column name="name" value="Показывать всем статистику блога"/>
             <column name="value" value="NO"/>
-
         </insert>
-
 
     </changeSet>
 </databaseChangeLog>

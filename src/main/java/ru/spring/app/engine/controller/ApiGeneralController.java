@@ -1,11 +1,11 @@
 package ru.spring.app.engine.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.spring.app.engine.api.response.InitResponse;
 import ru.spring.app.engine.api.response.SettingsResponse;
 import ru.spring.app.engine.api.response.TagResponse;
+import ru.spring.app.engine.repository.GlobalSettingsRepository;
 import ru.spring.app.engine.service.SettingsService;
 import ru.spring.app.engine.service.TagService;
 
@@ -16,6 +16,7 @@ public class ApiGeneralController {
     private final InitResponse initResponse;
     private final SettingsService settingsService;
     private final TagService tagService;
+    private GlobalSettingsRepository repository;
 
     public ApiGeneralController(InitResponse initResponse, SettingsService settingsService, TagService tagService) {
         this.initResponse = initResponse;
@@ -30,11 +31,8 @@ public class ApiGeneralController {
 
     @GetMapping("/settings")
     private ResponseEntity<SettingsResponse> settings() {
-        if (settingsService.getGlobalSettings() != null) {
-            return ResponseEntity.ok(settingsService.getGlobalSettings());
-        } else {
-            return new ResponseEntity<>(settingsService.getGlobalSettings(), HttpStatus.BAD_REQUEST);
-        }
+        return ResponseEntity.ok(settingsService.getGlobalSettings(repository));
+
     }
 
     @GetMapping("/tag")
