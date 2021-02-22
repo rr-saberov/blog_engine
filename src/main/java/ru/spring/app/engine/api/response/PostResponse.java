@@ -1,14 +1,14 @@
 package ru.spring.app.engine.api.response;
 
 import lombok.Data;
-import ru.spring.app.engine.dto.User;
+import ru.spring.app.engine.model.Users;
 
 @Data
 public class PostResponse {
 
     private int id;
     private long timestamp;
-    private User user;
+    private Users user;
     private String title;
     private String announce;
     private int likeCount;

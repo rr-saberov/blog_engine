@@ -11,4 +11,10 @@ public class AuthService {
         authResponse.setResult(true);
         return authResponse;
     }
+
+    public boolean captchaEnter() {
+        return false;
+    }
+
+
 }
