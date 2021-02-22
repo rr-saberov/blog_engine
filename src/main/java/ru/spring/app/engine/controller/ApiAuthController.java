@@ -1,6 +1,7 @@
 package ru.spring.app.engine.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.spring.app.engine.service.AuthService;
@@ -23,5 +24,10 @@ public class ApiAuthController {
         } else {
             return false;
         }
+    }
+
+    @PostMapping("/captcha")
+    private boolean captcha() {
+        return authService.captchaEnter();
     }
 }

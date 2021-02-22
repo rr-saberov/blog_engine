@@ -6,8 +6,12 @@ import ru.spring.app.engine.api.response.InitResponse;
 import ru.spring.app.engine.api.response.SettingsResponse;
 import ru.spring.app.engine.api.response.TagResponse;
 import ru.spring.app.engine.repository.GlobalSettingsRepository;
+import ru.spring.app.engine.service.PostService;
 import ru.spring.app.engine.service.SettingsService;
 import ru.spring.app.engine.service.TagService;
+
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -16,12 +20,15 @@ public class ApiGeneralController {
     private final InitResponse initResponse;
     private final SettingsService settingsService;
     private final TagService tagService;
-    private GlobalSettingsRepository repository;
+    private final GlobalSettingsRepository repository;
+    private final PostService postService;
 
-    public ApiGeneralController(InitResponse initResponse, SettingsService settingsService, TagService tagService) {
+    public ApiGeneralController(InitResponse initResponse, SettingsService settingsService, TagService tagService, GlobalSettingsRepository repository, PostService postService) {
         this.initResponse = initResponse;
         this.settingsService = settingsService;
         this.tagService = tagService;
+        this.repository = repository;
+        this.postService = postService;
     }
 
     @GetMapping("/init")
@@ -38,5 +45,10 @@ public class ApiGeneralController {
     @GetMapping("/tag")
     private ResponseEntity<TagResponse> tags() {
         return ResponseEntity.ok(tagService.getTags());
+    }
+
+    @GetMapping("/calendar")
+    private Map<Integer, Integer> postsCountInYear() {
+        return postService.getPostsCountInYear();
     }
 }
