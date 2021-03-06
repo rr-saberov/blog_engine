@@ -1,26 +1,20 @@
 package ru.spring.app.engine.service;
 
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.response.PostResponse;
 import ru.spring.app.engine.model.Posts;
 import ru.spring.app.engine.repository.PostRepository;
+import ru.spring.app.engine.repository.PostsJpaRepository;
 
-import java.sql.ResultSet;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class PostService {
 
     private PostRepository postRepository;
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-
-    public PostService(NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private PostsJpaRepository postsJpaRepository;
 
     public PostResponse getPosts() {
         PostResponse postResponse = new PostResponse();
@@ -29,41 +23,35 @@ public class PostService {
         return postResponse;
     }
 
-    public List<Posts> getSearchedPosts(String query) {
-        List<Posts> filteredList = jdbcTemplate.query(query, (ResultSet rs, int rowNum) -> {
-            Posts posts = new Posts();
-            posts.setId(rs.getInt("id"));
-            posts.setModeratorId(rs.getInt("moderatorId"));
-            posts.setDate(rs.getDate("date"));
-            posts.setText(rs.getString("text"));
-            posts.setViewCount(rs.getInt("viewCount"));
-            return posts;
-        });
-
-        return filteredList;
+    public Page<Posts> getAllPosts(Integer limit) {
+        return postRepository.findAll(PageRequest.of(0, limit));
     }
 
-    public Map<Integer, Integer> getPostsCountInYear() {
-        Map<Integer, Integer> map = new HashMap<>();
-        List<Posts> postsList = postRepository.findAll();
-        for (Posts posts : postsList) {
-            map.put(map.size() + 1, posts.getDate().getYear());
-        }
-        return map;
+    public Page<Posts> getPostsSortedByUser(Integer limit) {
+        return postRepository.findPostsOrderByUserId(PageRequest.of(0, limit));
     }
 
-    public Map<Integer, Date> getPostsByDate(Date postDate) {
-        Map<Integer, Date> postsByDate = new HashMap<>();
-        List<Posts> postsList = postRepository.findAll();
-        for (Posts posts : postsList) {
-            if (posts.getDate().equals(postDate)) {
-                postsByDate.put(posts.getId(), postDate);
-            }
-        }
-        return postsByDate;
+    public Page<Posts> getPostsByLikeCount(Integer limit) {
+        return postRepository.findPostsOrderByLikes(PageRequest.of(0, limit));
+    }
+
+    public Page<Posts> getPostsByUser(Integer limit, Integer userId) {
+        return postRepository.findPostsByUserId(PageRequest.of(0, limit), userId);
+    }
+
+    public Page<Posts> getPostsCountInYear(Integer limit, Date date) {
+        return postRepository.postCountByYear(PageRequest.of(0, limit), date.getYear());
+    }
+
+    public Page<Posts> getPostsByDate(Integer limit, Date date) {
+        return postRepository.findPostsByDate(PageRequest.of(0, limit), date);
+    }
+
+    public Page<Posts> getPostsByTag(Integer limit, Integer tagId) {
+        return postRepository.findPostsByTag(PageRequest.of(0, limit), tagId);
     }
 
     public Posts getPostById(Integer id) {
-        return postRepository.getOne(id);
+        return postsJpaRepository.getOne(id);
     }
 }
