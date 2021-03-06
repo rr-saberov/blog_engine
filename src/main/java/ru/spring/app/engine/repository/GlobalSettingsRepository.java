@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.spring.app.engine.model.GlobalSettings;
 
 @Repository
-public interface GlobalSettingsRepository extends JpaRepository <GlobalSettings, Integer> {
+public interface GlobalSettingsRepository extends JpaRepository<GlobalSettings, Integer> {
 
 }

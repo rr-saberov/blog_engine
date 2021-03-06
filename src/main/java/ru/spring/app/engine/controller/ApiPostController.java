@@ -1,5 +1,6 @@
 package ru.spring.app.engine.controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,13 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.spring.app.engine.api.response.PostResponse;
 import ru.spring.app.engine.model.Posts;
-import ru.spring.app.engine.model.Tags;
 import ru.spring.app.engine.service.PostService;
 import ru.spring.app.engine.service.TagService;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/post")
@@ -27,29 +25,45 @@ public class ApiPostController {
         this.tagService = tagService;
     }
 
-
     @GetMapping
     private ResponseEntity<PostResponse> posts() {
         return ResponseEntity.ok(postService.getPosts());
     }
 
     @GetMapping("/search")
-    private List<Posts> searchPost(String query) {
-        return postService.getSearchedPosts(query);
+    private Page<Posts> getAllPost(Integer limit) {
+        return postService.getAllPosts(limit);
     }
 
+    @GetMapping("/search")
+    private Page<Posts> getPostsSortedByUsers(Integer limit) {
+        return postService.getPostsSortedByUser(limit);
+    }
+
+    @GetMapping("/search")
+    private Page<Posts> getPostsSortedByLikeCount(Integer limit) {
+        return postService.getPostsByLikeCount(limit);
+    }
+
+    @GetMapping("/search")
+    private Page<Posts> getPostsByUser(Integer limit, Integer userId) {
+        return postService.getPostsByUser(limit, userId);
+    }
+
+
+
     @GetMapping("/byDate")
-    private Map<Integer, Date> postsByDate(Date date) {
-        return postService.getPostsByDate(date);
+    private Page<Posts> getPostsByDate(Integer limit, Date date) {
+        return postService.getPostsByDate(limit, date);
     }
 
     @GetMapping("/byTag")
-    private Map<Integer, Tags> postsByTag(Tags tags) {
-        return tagService.getPostsByTag(tags);
+    private Page<Posts> getPostsByTag(Integer limit, Integer postId) {
+        return postService.getPostsByTag(limit, postId);
     }
 
     @GetMapping("/{ID}")
-    private Posts postById(Integer id) {
+    private Posts postById(@RequestParam(value = "ID") Integer id) {
         return postService.getPostById(id);
     }
 }
