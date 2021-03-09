@@ -126,14 +126,14 @@
         <createTable tableName="captcha_codes">
             <column autoIncrement="true" name="id" type="integer"/>
             <column name="time" type="date"/>
-            <column name="code" type="boolean"/>
-            <column name="secret_code" type="boolean"/>
+            <column name="code" type="varchar(255)"/>
+            <column name="secret_code" type="varchar(255)"/>
         </createTable>
 
         <insert tableName="captcha_codes">
             <column name="id" value="1"/>
-            <column name="code" value="true"/>
-            <column name="secret_code" value="true"/>
+            <column name="code" value="dsadsadsad"/>
+            <column name="secret_code" value="fdsafdsa45%%%"/>
         </insert>
 
         <createTable tableName="global_settings">

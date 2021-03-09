@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.response.PostResponse;
 import ru.spring.app.engine.model.Posts;
 import ru.spring.app.engine.repository.PostRepository;
-import ru.spring.app.engine.repository.PostsJpaRepository;
 
 import java.util.Date;
 
@@ -14,7 +13,6 @@ import java.util.Date;
 public class PostService {
 
     private PostRepository postRepository;
-    private PostsJpaRepository postsJpaRepository;
 
     public PostResponse getPosts() {
         PostResponse postResponse = new PostResponse();
@@ -52,6 +50,6 @@ public class PostService {
     }
 
     public Posts getPostById(Integer id) {
-        return postsJpaRepository.getOne(id);
+        return postRepository.getOne(id);
     }
 }

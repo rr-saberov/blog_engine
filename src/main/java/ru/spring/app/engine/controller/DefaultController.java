@@ -1,7 +1,6 @@
 package ru.spring.app.engine.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.spring.app.engine.api.response.InitResponse;
 
@@ -15,7 +14,7 @@ public class DefaultController {
         this.initResponse = initResponse;
     }
 
-    public String index(Model model) {
+    public String index() {
         System.out.println(initResponse.getTitle());
         return "index";
     }
