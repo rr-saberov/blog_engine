@@ -42,7 +42,6 @@ public class ApiGeneralController {
     @GetMapping("/settings")
     private ResponseEntity<SettingsResponse> settings() {
         return ResponseEntity.ok(settingsService.getGlobalSettings(repository));
-
     }
 
     @GetMapping("/calendar")

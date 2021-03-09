@@ -2,15 +2,13 @@ package ru.spring.app.engine.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.stereotype.Repository;
 import ru.spring.app.engine.model.Posts;
 
 import java.util.Date;
 
-@Repository
-public interface PostRepository extends PagingAndSortingRepository<Posts, Integer> {
+public interface PostRepository extends JpaRepository<Posts, Integer> {
 
     @Query("SELECT p " +
             "FROM Posts p " +
@@ -77,6 +75,5 @@ public interface PostRepository extends PagingAndSortingRepository<Posts, Intege
 //            "FROM Posts p " +
 //            "WHERE p.id = ?1 AND p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE")
 //    Posts findPostById(Integer postId);
-
 
 }

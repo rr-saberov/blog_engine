@@ -19,7 +19,7 @@ public class CaptchaCodes {
     @Column(nullable = false)
     private Date time;
     @Column(nullable = false)
-    private boolean code;
+    private String code;
     @Column(nullable = false)
-    private boolean secretCode;
+    private String secretCode;
 }
