@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.spring.app.engine.api.response.InitResponse;
 import ru.spring.app.engine.api.response.SettingsResponse;
@@ -45,8 +46,8 @@ public class ApiGeneralController {
     }
 
     @GetMapping("/calendar")
-    private Page<Posts> getPostCountInYear(Integer limit, Date date) {
-        return postService.getPostsCountInYear(limit, date);
+    private Page<Posts> getPostCountInYear(@RequestParam(defaultValue = "0") Integer offset, Integer limit, Date date) {
+        return postService.getPostsCountInYear(offset, limit, date);
     }
 
     @GetMapping("/tag")

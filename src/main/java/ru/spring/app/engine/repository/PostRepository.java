@@ -12,12 +12,13 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
 
     @Query("SELECT p " +
             "FROM Posts p " +
-            "LEFT JOIN Users user ON user.id = p.userId " +
+            "LEFT JOIN Users u ON u.id = p.userId " +
             "LEFT JOIN PostComments pc ON pc.postId = p.id " +
-            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id " +
-            "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTERD' AND p.date <= CURRENT_DATE " +
-            "ORDER BY p.userId")
-    Page<Posts> findPostsOrderByUserId (Pageable pageable);
+            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id AND pvl.value = 1 " +
+            "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
+            "GROUP BY p.id " +
+            "ORDER BY p.date DESC")
+    Page<Posts> getAllPostsByDate(Pageable pageable);
 
     @Query("SELECT p " +
             "FROM Posts p " +
@@ -27,17 +28,27 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
             "GROUP BY p.id " +
             "ORDER BY COUNT(pvl) DESC")
-    Page<Posts> findPostsOrderByLikes(Pageable pageable);
+    Page<Posts> getPostsByLikes(Pageable pageable);
 
     @Query("SELECT p " +
             "FROM Posts p " +
             "LEFT JOIN Users u ON u.id = p.userId " +
             "LEFT JOIN PostComments pc ON pc.postId = p.id " +
-            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id " +
+            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id AND pvl.value = 1 " +
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
-            "AND p.userId = ?2 " +
-            "GROUP BY p.id")
-    Page<Posts> findPostsByUserId (Pageable pageable, Integer userId);
+            "GROUP BY p.id " +
+            "ORDER BY p.date ASC")
+    Page <Posts> getAllOldPostsByDate(Pageable pageable);
+
+    @Query("SELECT p " +
+            "FROM Posts p " +
+            "LEFT JOIN Users u ON u.id = p.userId " +
+            "LEFT JOIN PostComments pc ON pc.postId = p.id " +
+            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id AND pvl.value = 1 " +
+            "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
+            "GROUP BY p.id " +
+            "ORDER BY COUNT(pc) DESC")
+    Page <Posts> getPostsByCommentCount(Pageable pageable);
 
     @Query("SELECT p " +
             "FROM Posts p " +
@@ -71,9 +82,5 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "GROUP BY p.id ")
     Page<Posts> findPostsByTag(Pageable pageable, Integer tagId);
 
-//    @Query("SELECT p " +
-//            "FROM Posts p " +
-//            "WHERE p.id = ?1 AND p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE")
-//    Posts findPostById(Integer postId);
-
 }
+
