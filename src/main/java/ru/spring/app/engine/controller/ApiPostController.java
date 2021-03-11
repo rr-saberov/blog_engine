@@ -1,12 +1,10 @@
 package ru.spring.app.engine.controller;
 
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.spring.app.engine.api.response.PostResponse;
 import ru.spring.app.engine.model.Posts;
 import ru.spring.app.engine.service.PostService;
 
@@ -23,38 +21,36 @@ public class ApiPostController {
     }
 
     @GetMapping
-    private ResponseEntity<PostResponse> posts() {
-        return ResponseEntity.ok(postService.getPosts());
+    private Page<Posts> posts(@RequestParam(defaultValue = "0") Integer offset, @RequestParam Integer limit) {
+        return postService.getAllPosts(offset, limit);
     }
 
     @GetMapping("/search")
-    private Page<Posts> getAllPost(Integer limit) {
-        return postService.getAllPosts(limit);
+    private Page<Posts> getPosts(@RequestParam(defaultValue = "0") Integer offset,
+                                 @RequestParam Integer limit,
+                                 @RequestParam(defaultValue = "recent") String mode) {
+        switch (mode) {
+            case "popular" :
+                return postService.getPostsByCommentCount(offset, limit);
+            case "best" :
+                return postService.getPostsByLike(offset, limit);
+            case "early" :
+                return postService.getAllOldPostsByDate(offset, limit);
+            default :
+                return postService.getAllPostsByDate(offset, limit);
+        }
     }
-//
-//    @GetMapping("/search")
-//    private Page<Posts> getPostsSortedByUsers(Integer limit) {
-//        return postService.getPostsSortedByUser(limit);
-//    }
-//
-//    @GetMapping("/search")
-//    private Page<Posts> getPostsSortedByLikeCount(Integer limit) {
-//        return postService.getPostsByLikeCount(limit);
-//    }
-//
-//    @GetMapping("/search")
-//    private Page<Posts> getPostsByUser(Integer limit, Integer userId) {
-//        return postService.getPostsByUser(limit, userId);
-//    }
 
     @GetMapping("/byDate")
-    private Page<Posts> getPostsByDate(Integer limit, Date date) {
-        return postService.getPostsByDate(limit, date);
+    private Page<Posts> getPostsByDate(@RequestParam(defaultValue = "0") Integer offset,
+                                       @RequestParam Integer limit, @RequestParam Date date) {
+        return postService.getPostsByDate(offset, limit, date);
     }
 
     @GetMapping("/byTag")
-    private Page<Posts> getPostsByTag(Integer limit, Integer postId) {
-        return postService.getPostsByTag(limit, postId);
+    private Page<Posts> getPostsByTag(@RequestParam(defaultValue = "0") Integer offset,
+                                      @RequestParam Integer limit, @RequestParam Integer postId) {
+        return postService.getPostsByTag(offset, limit, postId);
     }
 
     @GetMapping("/{ID}")
