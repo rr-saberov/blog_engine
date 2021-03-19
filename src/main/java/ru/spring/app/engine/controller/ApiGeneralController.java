@@ -1,48 +1,44 @@
 package ru.spring.app.engine.controller;
 
+import io.swagger.annotations.Api;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.spring.app.engine.api.response.InitResponse;
 import ru.spring.app.engine.api.response.SettingsResponse;
 import ru.spring.app.engine.api.response.TagResponse;
-import ru.spring.app.engine.model.Posts;
-import ru.spring.app.engine.repository.GlobalSettingsRepository;
+import ru.spring.app.engine.entity.Posts;
 import ru.spring.app.engine.service.PostService;
 import ru.spring.app.engine.service.SettingsService;
 import ru.spring.app.engine.service.TagService;
 
 import java.util.Date;
 
+@Api
 @RestController
 @RequestMapping("/api")
 public class ApiGeneralController {
 
-    private final InitResponse initResponse;
     private final SettingsService settingsService;
     private final TagService tagService;
-    private final GlobalSettingsRepository repository;
     private final PostService postService;
 
-    public ApiGeneralController(InitResponse initResponse, SettingsService settingsService, TagService tagService, GlobalSettingsRepository repository, PostService postService) {
-        this.initResponse = initResponse;
+    @Autowired
+    public ApiGeneralController(SettingsService settingsService,
+                                TagService tagService, PostService postService) {
         this.settingsService = settingsService;
         this.tagService = tagService;
-        this.repository = repository;
         this.postService = postService;
     }
 
     @GetMapping("/init")
-    private InitResponse init() {
+    private InitResponse init(@RequestBody InitResponse initResponse) {
         return initResponse;
     }
 
     @GetMapping("/settings")
-    private ResponseEntity<SettingsResponse> settings() {
-        return ResponseEntity.ok(settingsService.getGlobalSettings(repository));
+    private SettingsResponse settings() {
+        return settingsService.getGlobalSettings();
     }
 
     @GetMapping("/calendar")
@@ -51,7 +47,7 @@ public class ApiGeneralController {
     }
 
     @GetMapping("/tag")
-    private ResponseEntity<TagResponse> tags() {
-        return ResponseEntity.ok(tagService.getTags());
+    private TagResponse tags() {
+        return tagService.getTags();
     }
 }

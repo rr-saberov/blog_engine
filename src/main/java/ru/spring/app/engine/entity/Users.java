@@ -1,17 +1,21 @@
-package ru.spring.app.engine.model;
+package ru.spring.app.engine.entity;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
 @NoArgsConstructor
 @Table(name = "users")
+@ApiModel(description = "data model of users")
 public class Users {
 
     @Id
@@ -44,4 +48,15 @@ public class Users {
     @Column(columnDefinition = "text")
     private String photo;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "postsComments", referencedColumnName = "id")
+    private PostComments postsComments;
+
+    @OneToMany
+    @JoinColumn(name = "user_posts", referencedColumnName = "id")
+    private List<Posts> postsList = new ArrayList<>();
+
+    @OneToMany
+    @JoinColumn(name = "user_post_votes_id", referencedColumnName = "id")
+    private List<PostVotes> postVotes = new ArrayList<>();
 }

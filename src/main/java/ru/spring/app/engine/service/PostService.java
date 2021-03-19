@@ -1,10 +1,9 @@
 package ru.spring.app.engine.service;
 
-import liquibase.pro.packaged.I;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import ru.spring.app.engine.model.Posts;
+import ru.spring.app.engine.entity.Posts;
 import ru.spring.app.engine.repository.PostRepository;
 
 import java.util.Date;

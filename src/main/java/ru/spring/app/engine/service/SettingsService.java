@@ -2,22 +2,23 @@ package ru.spring.app.engine.service;
 
 import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.response.SettingsResponse;
-import ru.spring.app.engine.model.GlobalSettings;
+import ru.spring.app.engine.entity.GlobalSettings;
 import ru.spring.app.engine.repository.GlobalSettingsRepository;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SettingsService {
 
-    public SettingsResponse getGlobalSettings(GlobalSettingsRepository repository) {
-        SettingsResponse settingsResponse = new SettingsResponse();
-        Map<String, Boolean> map = new HashMap<>();
+    private GlobalSettingsRepository settingsRepository;
 
-        for (GlobalSettings globalSettings : repository.findAll()) {
-            map.put(globalSettings.getCode(), globalSettings.getValue().equals("YES"));
-        }
+
+    public SettingsResponse getGlobalSettings() {
+        SettingsResponse settingsResponse = new SettingsResponse();
+
+        Map<String, Boolean> map = settingsRepository.findAll().stream()
+                .collect(Collectors.toMap(GlobalSettings::getName, settings -> settings.getValue().equals("YES")));
 
         settingsResponse.setMultiuserMode(map.get("MULTIUSER_MODE"));
         settingsResponse.setPostPremoderation(map.get("POST_MODERATION"));

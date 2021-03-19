@@ -1,5 +1,6 @@
-package ru.spring.app.engine.model;
+package ru.spring.app.engine.entity;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @Table(name = "tag2post")
+@ApiModel(description = "data model of tags to post")
 public class Tag2Post {
 
     @Id
@@ -20,11 +22,11 @@ public class Tag2Post {
     @Column(nullable = false)
     private int tagId;
 
-    @OneToOne
-    @JoinColumn(name = "posts_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "posts_id", referencedColumnName = "id")
     private Posts postsId;
 
-    @OneToOne
-    @JoinColumn(name = "tags_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "tags_id", referencedColumnName = "id")
     private Tags tagsId;
 }

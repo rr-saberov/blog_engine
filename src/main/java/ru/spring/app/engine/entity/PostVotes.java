@@ -1,5 +1,6 @@
-package ru.spring.app.engine.model;
+package ru.spring.app.engine.entity;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @Table(name = "post_votes")
+@ApiModel(description = "data model of votes")
 public class PostVotes {
 
     @Id
@@ -29,8 +31,7 @@ public class PostVotes {
     @JoinColumn(name = "users_id")
     private Users usersId;
 
-    @OneToOne
-    @JoinColumn(name = "posts_id")
+    @OneToOne(mappedBy = "postVotes")
     private Posts postsId;
 
 }

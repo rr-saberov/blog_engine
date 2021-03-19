@@ -1,5 +1,6 @@
-package ru.spring.app.engine.model;
+package ru.spring.app.engine.entity;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @Table(name = "posts")
+@ApiModel(description = "data model of posts")
 public class Posts {
 
     @Id
@@ -31,9 +33,20 @@ public class Posts {
     @Column(nullable = false)
     private int viewCount;
 
-    @OneToOne
-    @JoinColumn(name = "moder_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "post_comments_id", referencedColumnName = "id")
+    private PostComments postComments;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "moder_id", referencedColumnName = "id")
     private Users moderId;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "posts_votes_id", referencedColumnName = "id")
+    private PostVotes postVotes;
+
+    @OneToOne(mappedBy = "postsId")
+    private Tag2Post tag2Post;
 
     @ManyToOne
     @JoinColumn(name = "users_id")

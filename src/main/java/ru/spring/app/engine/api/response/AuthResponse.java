@@ -1,7 +1,7 @@
 package ru.spring.app.engine.api.response;
 
 import lombok.Data;
-import ru.spring.app.engine.model.Users;
+import ru.spring.app.engine.entity.Users;
 
 @Data
 public class AuthResponse {

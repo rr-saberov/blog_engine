@@ -8,7 +8,7 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
 
-
+<!--
     <changeSet id="someId" author="ruslan">
         <sql>CREATE TYPE mod_status AS ENUM ('NEW', 'ACCEPTED', 'DECLINED')</sql>
         <createTable tableName="users">
@@ -162,7 +162,7 @@
             <column name="code" value="STATISTICS_IS_PUBLIC"/>
             <column name="name" value="Показывать всем статистику блога"/>
             <column name="value" value="NO"/>
-        </insert>
+        </insert>-->
 
-    </changeSet>
+
 </databaseChangeLog>
