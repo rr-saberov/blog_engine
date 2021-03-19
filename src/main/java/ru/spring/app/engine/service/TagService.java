@@ -2,8 +2,7 @@ package ru.spring.app.engine.service;
 
 import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.response.TagResponse;
-import ru.spring.app.engine.model.Posts;
-import ru.spring.app.engine.model.Tags;
+import ru.spring.app.engine.entity.Tags;
 import ru.spring.app.engine.repository.TagsRepository;
 
 import java.util.HashMap;

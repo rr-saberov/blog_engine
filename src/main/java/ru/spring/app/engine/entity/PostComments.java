@@ -1,5 +1,6 @@
-package ru.spring.app.engine.model;
+package ru.spring.app.engine.entity;
 
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @Table(name = "post_comments")
+@ApiModel(description = "data model of post comments")
 public class PostComments {
 
     @Id
@@ -26,12 +28,10 @@ public class PostComments {
     @Column(nullable = false, columnDefinition = "text")
     private String text;
 
-    @OneToOne
-    @JoinColumn(name = "posts_id")
+    @OneToOne(mappedBy = "postComments")
     private Posts postsId;
 
-    @OneToOne
-    @JoinColumn(name = "users_id")
+    @OneToOne(mappedBy = "postsComments")
     private Users usersId;
 }
 

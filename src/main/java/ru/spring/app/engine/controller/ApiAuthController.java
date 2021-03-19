@@ -1,36 +1,40 @@
 package ru.spring.app.engine.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.spring.app.engine.model.Users;
+import io.swagger.annotations.Api;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import ru.spring.app.engine.entity.Users;
 import ru.spring.app.engine.service.AuthService;
+import ru.spring.app.engine.service.CaptchaService;
 
 import java.io.IOException;
 
+@Api
 @RestController
 @RequestMapping("/api/auth")
 public class ApiAuthController {
 
     private final AuthService authService;
+    private final CaptchaService captchaService;
 
-    public ApiAuthController(AuthService authService) {
+    @Autowired
+    public ApiAuthController(AuthService authService, CaptchaService captchaService) {
         this.authService = authService;
+        this.captchaService = captchaService;
     }
 
     @GetMapping("/check")
-    private boolean check() {
-        return authService.authResponse().isResult();
+    private boolean check(@RequestBody Users users) {
+        return authService.authResponse(users).isResult();
     }
 
- //   @PostMapping("/captcha")
- //   private boolean captcha() throws IOException {
-   //     return authService.captchaEnter();
-//    }
+    @PostMapping("/captcha")
+    private boolean captcha(@RequestParam String code) throws IOException {
+        return captchaService.validCaptcha(code);
+    }
 
     @PostMapping("/register")
-    private void regUser(Users users) {
+    private void regUser(@RequestBody Users users) {
         authService.newUserRegistration(users);
     }
 }
