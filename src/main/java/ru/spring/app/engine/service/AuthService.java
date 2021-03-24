@@ -1,5 +1,6 @@
 package ru.spring.app.engine.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.response.AuthResponse;
 import ru.spring.app.engine.entity.Users;
@@ -12,7 +13,12 @@ import java.util.stream.Collectors;
 @Service
 public class AuthService {
 
-    UserRepository userRepository;
+    private UserRepository userRepository;
+
+    @Autowired
+    public AuthService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public AuthResponse authResponse(Users user) {
         AuthResponse authResponse = new AuthResponse();

@@ -21,14 +21,28 @@
     </properties>
 
     <build>
-        <pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <propertyFile>src/main/resources/liquibase.properties</propertyFile>
+                </configuration>
+            </plugin>
+        </plugins>
+<!--        <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.liquibase</groupId>
                     <artifactId>liquibase-maven-plugin</artifactId>
                     <version>3.8.1</version>
                     <configuration>
-                        <propertyFile>src/main/resources/liquibase-maven-plugin.properties</propertyFile>
+                        <propertyFile>src/main/resources/liquibase.properties</propertyFile>
                         <systemProperties>
                             <user.name>ruslan</user.name>
                         </systemProperties>
@@ -53,7 +67,7 @@
                     <include>**/*.*</include>
                 </includes>
             </resource>
-        </resources>
+        </resources>-->
     </build>
 
 

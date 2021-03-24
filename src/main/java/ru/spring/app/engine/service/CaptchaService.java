@@ -3,6 +3,7 @@ package ru.spring.app.engine.service;
 import com.github.cage.Cage;
 import com.github.cage.GCage;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,12 @@ public class CaptchaService {
 
     private JdbcTemplate jdbcTemplate;
     private CaptchaRepository captchaRepository;
+
+    @Autowired
+    public CaptchaService(JdbcTemplate jdbcTemplate, CaptchaRepository captchaRepository) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.captchaRepository = captchaRepository;
+    }
 
     public void generateCaptcha() {
         String encodedString;

@@ -1,5 +1,6 @@
 package ru.spring.app.engine.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,12 @@ import java.util.Date;
 @Service
 public class PostService {
 
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
+
+    @Autowired
+    public PostService(PostRepository postRepository) {
+        this.postRepository = postRepository;
+    }
 
     public Page<Posts> getAllPosts(Integer offset, Integer limit) {
         return postRepository.findAll(PageRequest.of(offset, limit));
