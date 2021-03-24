@@ -23,13 +23,13 @@ public class ApiPostController {
     }
 
     @GetMapping
-    private Page<Posts> posts(@RequestParam(defaultValue = "0") Integer offset, @RequestParam Integer limit) {
+    private Page<Posts> posts(@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "1") Integer limit) {
         return postService.getAllPosts(offset, limit);
     }
 
     @GetMapping("/search")
     private Page<Posts> getPosts(@RequestParam(defaultValue = "0") Integer offset,
-                                 @RequestParam Integer limit,
+                                 @RequestParam(defaultValue = "6") Integer limit,
                                  @RequestParam(defaultValue = "recent") String mode) {
         switch (mode) {
             case "popular" :

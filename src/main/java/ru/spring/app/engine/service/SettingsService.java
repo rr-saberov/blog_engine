@@ -1,5 +1,6 @@
 package ru.spring.app.engine.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.response.SettingsResponse;
 import ru.spring.app.engine.entity.GlobalSettings;
@@ -13,12 +14,16 @@ public class SettingsService {
 
     private GlobalSettingsRepository settingsRepository;
 
+    @Autowired
+    public SettingsService(GlobalSettingsRepository settingsRepository) {
+        this.settingsRepository = settingsRepository;
+    }
 
     public SettingsResponse getGlobalSettings() {
         SettingsResponse settingsResponse = new SettingsResponse();
 
         Map<String, Boolean> map = settingsRepository.findAll().stream()
-                .collect(Collectors.toMap(GlobalSettings::getName, settings -> settings.getValue().equals("YES")));
+                .collect(Collectors.toMap(GlobalSettings::getCode, settings -> settings.getValue().equals("YES")));
 
         settingsResponse.setMultiuserMode(map.get("MULTIUSER_MODE"));
         settingsResponse.setPostPremoderation(map.get("POST_MODERATION"));

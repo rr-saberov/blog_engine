@@ -38,7 +38,7 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
             "GROUP BY p.id " +
             "ORDER BY p.date ASC")
-    Page <Posts> getAllOldPostsByDate(Pageable pageable);
+    Page<Posts> getAllOldPostsByDate(Pageable pageable);
 
     @Query("SELECT p " +
             "FROM Posts p " +
@@ -48,7 +48,7 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
             "GROUP BY p.id " +
             "ORDER BY COUNT(pc) DESC")
-    Page <Posts> getPostsByCommentCount(Pageable pageable);
+    Page<Posts> getPostsByCommentCount(Pageable pageable);
 
     @Query("SELECT p " +
             "FROM Posts p " +
