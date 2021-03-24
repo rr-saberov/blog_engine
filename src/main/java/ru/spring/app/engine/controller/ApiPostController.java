@@ -23,7 +23,7 @@ public class ApiPostController {
     }
 
     @GetMapping
-    private Page<Posts> posts(@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "6") Integer limit) {
+    private Page<Posts> posts(@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "1") Integer limit) {
         return postService.getAllPosts(offset, limit);
     }
 
