@@ -45,24 +45,24 @@ public class ApiPostController {
     }
 
     @GetMapping("/search")
-    private Page<Posts> getPosts(@RequestParam(defaultValue = "0") Integer offset,
+    private ResponseEntity<Page<PostResponse>> getPosts(@RequestParam(defaultValue = "0") Integer offset,
                                  @RequestParam(defaultValue = "6") Integer limit,
                                  @RequestParam(defaultValue = "recent") String mode) {
         switch (mode) {
             case "popular" :
-                return postService.getPostsByCommentCount(offset, limit);
+                return ResponseEntity.ok(postService.getPostsByCommentCount(offset, limit));
             case "best" :
-                return postService.getPostsByLike(offset, limit);
+                return ResponseEntity.ok(postService.getPostsByLike(offset, limit));
             case "early" :
-                return postService.getAllOldPostsByDate(offset, limit);
+                return ResponseEntity.ok(postService.getAllOldPostsByDate(offset, limit));
             default :
-                return postService.getAllPostsByDate(offset, limit);
+                return ResponseEntity.ok(postService.getAllPostsByDate(offset, limit));
         }
     }
 
     @GetMapping("/byDate")
     private Page<Posts> getPostsByDate(@RequestParam(defaultValue = "0") Integer offset,
-                                       @RequestParam(defaultValue = "5") Integer limit, @RequestParam Date date) {
+                                       @RequestParam(defaultValue = "5") Integer limit, @RequestParam(defaultValue = "2005-10-09") Date date) {
         return postService.getPostsByDate(offset, limit, date);
     }
 
@@ -74,7 +74,7 @@ public class ApiPostController {
     }
 
     @GetMapping("/{ID}")
-    private Posts postById(@RequestParam(value = "ID") Integer id) {
+    private Posts postById(@RequestParam(value = "ID", defaultValue = "1") Integer id) {
         return postService.getPostById(id);
     }
 }

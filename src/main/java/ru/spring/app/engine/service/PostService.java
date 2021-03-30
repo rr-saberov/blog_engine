@@ -24,19 +24,19 @@ public class PostService {
         return new PostResponse();
     }
 
-    public Page<Posts> getAllPostsByDate(Integer offset, Integer limit) {
+    public Page<PostResponse> getAllPostsByDate(Integer offset, Integer limit) {
         return postRepository.getAllPostsByDate(PageRequest.of(offset, limit));
     }
 
-    public Page<Posts> getAllOldPostsByDate(Integer offset, Integer limit) {
+    public Page<PostResponse> getAllOldPostsByDate(Integer offset, Integer limit) {
         return postRepository.getAllOldPostsByDate(PageRequest.of(offset, limit));
     }
 
-    public Page<Posts> getPostsByLike(Integer offset, Integer limit) {
+    public Page<PostResponse> getPostsByLike(Integer offset, Integer limit) {
         return postRepository.getPostsByLikes(PageRequest.of(offset, limit));
     }
 
-    public Page<Posts> getPostsByCommentCount(Integer offset, Integer limit) {
+    public Page<PostResponse> getPostsByCommentCount(Integer offset, Integer limit) {
         return postRepository.getPostsByCommentCount(PageRequest.of(offset, limit));
     }
 

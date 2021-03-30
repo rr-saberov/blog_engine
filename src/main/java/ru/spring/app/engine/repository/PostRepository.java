@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import ru.spring.app.engine.api.response.PostResponse;
 import ru.spring.app.engine.entity.Posts;
 
 import java.util.Date;
@@ -18,7 +19,7 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
             "GROUP BY p.id " +
             "ORDER BY p.date DESC")
-    Page<Posts> getAllPostsByDate(Pageable pageable);
+    Page<PostResponse> getAllPostsByDate(Pageable pageable);
 
     @Query("SELECT p " +
             "FROM Posts p " +
@@ -28,7 +29,7 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
             "GROUP BY p.id " +
             "ORDER BY COUNT(pvl) DESC")
-    Page<Posts> getPostsByLikes(Pageable pageable);
+    Page<PostResponse> getPostsByLikes(Pageable pageable);
 
     @Query("SELECT p " +
             "FROM Posts p " +
@@ -38,7 +39,7 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
             "GROUP BY p.id " +
             "ORDER BY p.date ASC")
-    Page<Posts> getAllOldPostsByDate(Pageable pageable);
+    Page<PostResponse> getAllOldPostsByDate(Pageable pageable);
 
     @Query("SELECT p " +
             "FROM Posts p " +
@@ -48,7 +49,7 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
             "GROUP BY p.id " +
             "ORDER BY COUNT(pc) DESC")
-    Page<Posts> getPostsByCommentCount(Pageable pageable);
+    Page<PostResponse> getPostsByCommentCount(Pageable pageable);
 
     @Query("SELECT p " +
             "FROM Posts p " +
@@ -73,7 +74,7 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "LEFT JOIN PostComments pc ON pc.postId = p.id " +
             "LEFT JOIN PostVotes pvl ON pvl.postId = p.id " +
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
-            "AND p.date = ?2 " +
+            "AND p.date = ?1 " +
             "GROUP BY p.id ")
     Page<Posts> findPostsByDate(Pageable pageable, Date date);
 
