@@ -2,6 +2,7 @@ package ru.spring.app.engine.controller;
 
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.spring.app.engine.entity.Users;
 import ru.spring.app.engine.service.AuthService;
@@ -24,13 +25,13 @@ public class ApiAuthController {
     }
 
     @GetMapping("/check")
-    private boolean check(@RequestBody Users users) {
-        return authService.authResponse(users).isResult();
+    private ResponseEntity<Boolean> check() {
+        return ResponseEntity.ok(false);
     }
 
     @PostMapping("/captcha")
-    private boolean captcha(@RequestParam String code) throws IOException {
-        return captchaService.validCaptcha(code);
+    private ResponseEntity<Boolean> captcha(@RequestParam String code) throws IOException {
+        return ResponseEntity.ok(captchaService.validCaptcha(code));
     }
 
     @PostMapping("/register")

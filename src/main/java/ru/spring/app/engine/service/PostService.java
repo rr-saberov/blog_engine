@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.spring.app.engine.api.response.PostResponse;
 import ru.spring.app.engine.entity.Posts;
 import ru.spring.app.engine.repository.PostRepository;
 
@@ -19,28 +20,28 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public Page<Posts> getAllPosts(Integer offset, Integer limit) {
-        return postRepository.findAll(PageRequest.of(offset, limit));
+    public PostResponse getAllPosts() {
+        return new PostResponse();
     }
 
-    public Page<Posts> getAllPostsByDate(Integer offset, Integer limit) {
+    public Page<PostResponse> getAllPostsByDate(Integer offset, Integer limit) {
         return postRepository.getAllPostsByDate(PageRequest.of(offset, limit));
     }
 
-    public Page<Posts> getAllOldPostsByDate(Integer offset, Integer limit) {
+    public Page<PostResponse> getAllOldPostsByDate(Integer offset, Integer limit) {
         return postRepository.getAllOldPostsByDate(PageRequest.of(offset, limit));
     }
 
-    public Page<Posts> getPostsByLike(Integer offset, Integer limit) {
+    public Page<PostResponse> getPostsByLike(Integer offset, Integer limit) {
         return postRepository.getPostsByLikes(PageRequest.of(offset, limit));
     }
 
-    public Page<Posts> getPostsByCommentCount(Integer offset, Integer limit) {
+    public Page<PostResponse> getPostsByCommentCount(Integer offset, Integer limit) {
         return postRepository.getPostsByCommentCount(PageRequest.of(offset, limit));
     }
 
-    public Page<Posts> getPostsCountInYear(Integer offset, Integer limit, Date date) {
-        return postRepository.postCountByYear(PageRequest.of(offset, limit), date.getYear());
+    public Integer getPostsCountInYear(Integer year) {
+        return postRepository.postCountByYear(year);
     }
 
     public Page<Posts> getPostsByDate(Integer offset, Integer limit, Date date) {
