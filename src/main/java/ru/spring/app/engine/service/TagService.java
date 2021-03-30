@@ -22,21 +22,11 @@ public class TagService {
     }
 
     public TagResponse getTags() {
-        TagResponse tagResponse = new TagResponse();
-        return tagResponse;
+        return new TagResponse(tagsRepository.findAll());
     }
 
     public Map<Integer, String> getPostsByTag(Tags tag) {
         return tagsRepository.findAll().stream().filter(tags -> tags.getName().equals(tag.getName()))
                 .collect(Collectors.toMap(Tags::getId, Tags::getName));
     }
-/*        Map<Integer, Tags> postsByTag = new HashMap<>();
-        List<Tags> tagsList = tagsRepository.findAll();
-        for (Tags tags : tagsList) {
-            if (tags.getName().equals(tag.getName())) {
-                postsByTag.put(tags.getId(), tag);
-            }
-        }
-        return postsByTag;
-    }*/
 }

@@ -14,7 +14,7 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "FROM Posts p " +
             "LEFT JOIN Users u ON u.id = p.userId " +
             "LEFT JOIN PostComments pc ON pc.postId = p.id " +
-            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id AND pvl.value = 1 " +
+            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id AND pvl.value = true " +
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
             "GROUP BY p.id " +
             "ORDER BY p.date DESC")
@@ -24,7 +24,7 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "FROM Posts p " +
             "LEFT JOIN Users u ON u.id = p.userId " +
             "LEFT JOIN PostComments pc ON pc.postId = p.id " +
-            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id AND pvl.value = 1 " +
+            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id AND pvl.value = true " +
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
             "GROUP BY p.id " +
             "ORDER BY COUNT(pvl) DESC")
@@ -34,7 +34,7 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "FROM Posts p " +
             "LEFT JOIN Users u ON u.id = p.userId " +
             "LEFT JOIN PostComments pc ON pc.postId = p.id " +
-            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id AND pvl.value = 1 " +
+            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id AND pvl.value = true " +
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
             "GROUP BY p.id " +
             "ORDER BY p.date ASC")
@@ -44,7 +44,7 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "FROM Posts p " +
             "LEFT JOIN Users u ON u.id = p.userId " +
             "LEFT JOIN PostComments pc ON pc.postId = p.id " +
-            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id AND pvl.value = 1 " +
+            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id AND pvl.value = true " +
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
             "GROUP BY p.id " +
             "ORDER BY COUNT(pc) DESC")
@@ -56,10 +56,16 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
             "LEFT JOIN PostComments pc ON pc.postId = p.id " +
             "LEFT JOIN PostVotes pvl ON pvl.postId = p.id " +
             "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
-            "AND p.date = ?2 " +
+            "AND p.date = ?1 " +
             "GROUP BY p.id " +
             "ORDER BY COUNT(p) DESC")
-    Page<Posts> postCountByYear(Pageable pageable, Integer year);
+    Integer postCountByYear(Integer year);
+
+//    @Query("SELECT SUM (Posts.id)" +
+//            "FROM Posts p " +
+//            "WHERE p.isActive = true AND p.moderationStatus = 'ACCEPTED' AND p.date <= CURRENT_DATE " +
+//            "AND p.date >= ?1 ")
+//    Integer postCountByYear(Integer year);
 
     @Query("SELECT p " +
             "FROM Posts p " +

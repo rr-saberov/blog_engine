@@ -28,6 +28,7 @@ public class SettingsService {
         settingsResponse.setMultiuserMode(map.get("MULTIUSER_MODE"));
         settingsResponse.setPostPremoderation(map.get("POST_MODERATION"));
         settingsResponse.setStatisticsIsPublic(map.get("STATISTICS_IS_PUBLIC"));
+
         return settingsResponse;
     }
 }

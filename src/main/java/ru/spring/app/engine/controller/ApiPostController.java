@@ -1,15 +1,19 @@
 package ru.spring.app.engine.controller;
 
 import io.swagger.annotations.Api;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.spring.app.engine.api.response.PostResponse;
 import ru.spring.app.engine.entity.Posts;
 import ru.spring.app.engine.service.PostService;
 
 import java.util.Date;
+import java.util.List;
 
 @Api
 @RestController
@@ -18,13 +22,26 @@ public class ApiPostController {
 
     private final PostService postService;
 
+    @Autowired
     public ApiPostController(PostService postService) {
         this.postService = postService;
     }
 
+//    @GetMapping
+//    private Page<Posts> posts(@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "1") Integer limit) {
+//        return postService.getAllPosts(offset, limit);
+//    }
+
+//    @GetMapping
+//    private PostResponse posts(@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "1") Integer limit) {
+//        PostResponse postResponse = new PostResponse();
+//        postResponse.setPosts(postService.getAllPosts(offset, limit));
+//        return postResponse;
+//    }
+
     @GetMapping
-    private Page<Posts> posts(@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "1") Integer limit) {
-        return postService.getAllPosts(offset, limit);
+    private ResponseEntity<PostResponse> posts() {
+        return ResponseEntity.ok(postService.getAllPosts());
     }
 
     @GetMapping("/search")
@@ -45,13 +62,14 @@ public class ApiPostController {
 
     @GetMapping("/byDate")
     private Page<Posts> getPostsByDate(@RequestParam(defaultValue = "0") Integer offset,
-                                       @RequestParam Integer limit, @RequestParam Date date) {
+                                       @RequestParam(defaultValue = "5") Integer limit, @RequestParam Date date) {
         return postService.getPostsByDate(offset, limit, date);
     }
 
     @GetMapping("/byTag")
     private Page<Posts> getPostsByTag(@RequestParam(defaultValue = "0") Integer offset,
-                                      @RequestParam Integer limit, @RequestParam Integer postId) {
+                                      @RequestParam(defaultValue = "5") Integer limit,
+                                      @RequestParam(defaultValue = "1") Integer postId) {
         return postService.getPostsByTag(offset, limit, postId);
     }
 

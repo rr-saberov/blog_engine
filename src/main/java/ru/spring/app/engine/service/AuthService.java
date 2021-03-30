@@ -24,7 +24,7 @@ public class AuthService {
         AuthResponse authResponse = new AuthResponse();
 
         Map<String, String> usersMap = userRepository.findAll().stream()
-                .collect(Collectors.toMap(Users::getName, users -> users.getPassword()));
+                .collect(Collectors.toMap(Users::getName, Users::getPassword));
 
         authResponse.setResult
                 (usersMap.containsKey(user.getName()) && usersMap.containsValue(user.getPassword()));
