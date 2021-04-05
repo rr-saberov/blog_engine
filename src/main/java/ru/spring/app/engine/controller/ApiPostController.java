@@ -3,17 +3,17 @@ package ru.spring.app.engine.controller;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.spring.app.engine.api.response.PostResponse;
+import ru.spring.app.engine.api.response.PostsResponse;
 import ru.spring.app.engine.entity.Posts;
 import ru.spring.app.engine.service.PostService;
 
 import java.util.Date;
-import java.util.List;
 
 @Api
 @RestController
@@ -27,54 +27,60 @@ public class ApiPostController {
         this.postService = postService;
     }
 
-//    @GetMapping
-//    private Page<Posts> posts(@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "1") Integer limit) {
-//        return postService.getAllPosts(offset, limit);
-//    }
-
-//    @GetMapping
-//    private PostResponse posts(@RequestParam(defaultValue = "0") Integer offset, @RequestParam(defaultValue = "1") Integer limit) {
-//        PostResponse postResponse = new PostResponse();
-//        postResponse.setPosts(postService.getAllPosts(offset, limit));
-//        return postResponse;
-//    }
-
     @GetMapping
-    private ResponseEntity<PostResponse> posts() {
-        return ResponseEntity.ok(postService.getAllPosts());
+    private ResponseEntity<PostsResponse> getPosts(
+            @RequestParam(defaultValue = "0") Integer offset,
+            @RequestParam(defaultValue = "10") Integer limit,
+            @RequestParam(defaultValue = "recent") String mode) {
+        return ResponseEntity.ok(postService.getPosts(offset, limit, mode));
     }
 
+//    @GetMapping
+//    private ResponseEntity<PostsResponse> getPosts(
+//            @RequestParam(defaultValue = "0") Integer offset,
+//            @RequestParam(defaultValue = "10") Integer limit,
+//            @RequestParam(defaultValue = "recent") String mode) {
+//        return ResponseEntity.ok(postService.getPosts(offset, limit, mode));
+//    }
+
+
+/*
     @GetMapping("/search")
-    private ResponseEntity<Page<PostResponse>> getPosts(@RequestParam(defaultValue = "0") Integer offset,
-                                 @RequestParam(defaultValue = "6") Integer limit,
-                                 @RequestParam(defaultValue = "recent") String mode) {
-        switch (mode) {
-            case "popular" :
-                return ResponseEntity.ok(postService.getPostsByCommentCount(offset, limit));
-            case "best" :
-                return ResponseEntity.ok(postService.getPostsByLike(offset, limit));
-            case "early" :
-                return ResponseEntity.ok(postService.getAllOldPostsByDate(offset, limit));
-            default :
-                return ResponseEntity.ok(postService.getAllPostsByDate(offset, limit));
-        }
+    private ResponseEntity<PostsResponse> searchPosts(
+            @RequestParam(defaultValue = "0") Integer offset,
+            @RequestParam(defaultValue = "10") Integer limit,
+            @RequestParam(defaultValue = "recent") String query) {
+        return postService.search(offset, limit, query);
     }
+*/
 
-    @GetMapping("/byDate")
+/*        switch (mode) {
+            case "popular":
+                return ResponseEntity.ok(postService.getPostsByCommentCount(offset, limit));
+            case "best":
+                return ResponseEntity.ok(postService.getPostsByLike(offset, limit));
+            case "early":
+                return ResponseEntity.ok(postService.getAllOldPostsByDate(offset, limit));
+            default:
+                return ResponseEntity.ok(postService.getAllPostsByDate(offset, limit));
+        }*/
+
+
+/*    @GetMapping("/byDate")
     private Page<Posts> getPostsByDate(@RequestParam(defaultValue = "0") Integer offset,
                                        @RequestParam(defaultValue = "5") Integer limit, @RequestParam(defaultValue = "2005-10-09") Date date) {
         return postService.getPostsByDate(offset, limit, date);
-    }
+    }*/
 
-    @GetMapping("/byTag")
-    private Page<Posts> getPostsByTag(@RequestParam(defaultValue = "0") Integer offset,
-                                      @RequestParam(defaultValue = "5") Integer limit,
-                                      @RequestParam(defaultValue = "1") Integer postId) {
-        return postService.getPostsByTag(offset, limit, postId);
-    }
-
-    @GetMapping("/{ID}")
-    private Posts postById(@RequestParam(value = "ID", defaultValue = "1") Integer id) {
-        return postService.getPostById(id);
-    }
+//    @GetMapping("/byTag")
+//    private Page<Posts> getPostsByTag(@RequestParam(defaultValue = "0") Integer offset,
+//                                      @RequestParam(defaultValue = "10") Integer limit,
+//                                      @RequestParam(defaultValue = "1") Integer postId) {
+//        return postService.getPostsByTag(offset, limit, postId);
+//    }
+//
+//    @GetMapping("/{ID}")
+//    private Posts postById(@RequestParam(value = "ID", defaultValue = "1") Integer id) {
+//        return postService.getPostById(id);
+//    }
 }

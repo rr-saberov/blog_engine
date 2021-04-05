@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="14434343333" author="Ruslan">
+
+        <insert tableName="post_comments">
+            <column name="id" value="1"/>
+            <column name="parent_id" value="1"/>
+            <column name="post_id" value="1"/>
+            <column name="text" value="text"/>
+            <column name="time" value="2005-11-2 20:00:00"/>
+            <column name="user_id" value="1"/>
+        </insert>
+
+        <insert tableName="tags">
+            <column name="id" value="1"/>
+            <column name="name" value="tag name"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" value="1"/>
+            <column name="code" value="556677"/>
+            <column name="email" value="denis@gmail.com"/>
+            <column name="is_moderator" value="9"/>
+            <column name="name" value="Denis"/>
+            <column name="password" value="12345"/>
+            <column name="photo" value="https://yandex.ru/photoDenisa"/>
+            <column name="reg_time" value="2005-10-09 20:00:00"/>
+            <column name="posts_comments" value="1"/>
+        </insert>
+
+        <insert tableName="captcha_codes">
+            <column name="id" value="1"/>
+            <column name="code" value="dsadsadsad"/>
+            <column name="secret_code" value="fdsafdsa45%%%"/>
+            <column name="time" value="2005-10-09 20:00:00"/>
+        </insert>
+
+        <insert tableName="post_votes">
+            <column name="id" value="1"/>
+            <column name="post_id" value="1"/>
+            <column name="time" value="2011-10-09 20:00:00"/>
+            <column name="user_id" value="1"/>
+            <column name="value" value="1"/>
+            <column name="users_id" value="1"/>
+            <column name="user_post_votes_id" value="1"/>
+        </insert>
+
+        <insert tableName="posts">
+            <column name="id" value="1"/>
+            <column name="is_active" value="1"/>
+            <column name="moderation_status" value="NEW"/>
+            <column name="time" value="2005-10-09 20:00:00"/>
+            <column name="text" value="test_text"/>
+            <column name="view_count" value="55"/>
+            <column name="user_id" value="1"/>
+            <column name="view_count" value="2"/>
+            <column name="moderator_id" value="1"/>
+            <column name="post_comments_id" value="1"/>
+            <column name="posts_votes_id" value="1"/>
+            <column name="moder_id" value="1"/>
+            <column name="users_id" value="1"/>
+            <column name="user_posts" value="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

@@ -30,7 +30,6 @@ public class PostComments {
 
     @OneToOne(mappedBy = "postComments")
     private Posts postsId;
-
     @OneToOne(mappedBy = "postsComments")
     private Users usersId;
 }

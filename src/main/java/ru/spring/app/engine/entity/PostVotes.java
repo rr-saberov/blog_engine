@@ -25,7 +25,7 @@ public class PostVotes {
     @Column(nullable = false)
     private Date time;
     @Column(nullable = false)
-    private boolean value;
+    private int value;
 
     @ManyToOne
     @JoinColumn(name = "users_id")

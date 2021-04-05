@@ -19,7 +19,7 @@ public class Posts {
     @Column(nullable = false, columnDefinition = "serial")
     private int id;
     @Column(nullable = false)
-    private boolean isActive;
+    private int isActive;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ModerationStatus moderationStatus;
@@ -27,7 +27,7 @@ public class Posts {
     @Column(nullable = false)
     private int userId;
     @Column(nullable = false)
-    private Date date;
+    private Date time;
     @Column(nullable = false, columnDefinition = "text")
     private String text;
     @Column(nullable = false)

@@ -5,8 +5,7 @@ import ru.spring.app.engine.entity.Users;
 
 @Data
 public class AuthResponse {
-
     private boolean result;
-    private Users users;
+    private AuthUserResponse authUserResponse;
 }
 
