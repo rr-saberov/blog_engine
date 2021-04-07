@@ -4,22 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.spring.app.engine.api.response.PostsResponse;
-import ru.spring.app.engine.api.response.SinglePostResponse;
-import ru.spring.app.engine.api.response.UserResponse;
+import ru.spring.app.engine.api.response.*;
+import ru.spring.app.engine.entity.Posts;
+import ru.spring.app.engine.entity.Tags;
 import ru.spring.app.engine.repository.PostRepository;
 
+import javax.persistence.EntityManager;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class PostService {
 
     private final PostRepository postRepository;
+    private EntityManager entityManager;
 
     @Autowired
     public PostService(PostRepository postRepository) {
@@ -32,26 +31,11 @@ public class PostService {
         return postsResponse;
     }
 
-//    public Page<PostsResponse> getPosts(Integer offset, Integer limit, String mode) {
-//        Pageable nextPage = PageRequest.of(offset, limit);
-//        switch (mode) {
-//            case "popular":
-//                return new PageImpl<>(postRepository.getPostsByCommentCount(nextPage));
-//            case "best":
-//                return new PageImpl<>(postRepository.getPostsByLikes(nextPage));
-//            case "early":
-//                return new PageImpl<>(postRepository.getOldPosts(nextPage));
-//            default:
-//                return new PageImpl<>(postRepository.getPostsByDate(nextPage));
-//        }
-//    }
-
-
     public PostsResponse getPosts(Integer offset, Integer limit, String mode) {
         Pageable nextPage = PageRequest.of(offset, limit);
         switch (mode) {
-/*            case "popular":
-                return ResponseEntity.ok(new PageImpl<PostsResponse>(postsByCommentCount()));*/  //как реализовать пагинацию?
+            case "popular":
+                return postsByCommentCount();  //как реализовать пагинацию?
             case "best":
                 return postsByLikeCount();
             case "early":
@@ -59,6 +43,43 @@ public class PostService {
             default:
                 return postsByDate();
         }
+    }
+
+    public PostsResponse search(Integer offset, Integer limit, String query) {
+        return postsByCommentCount();
+    }
+
+    public CalendarResponse getPostsCountInTheYear(Integer year) {
+        CalendarResponse calendarResponse = new CalendarResponse();
+        if (year == 0) {
+            calendarResponse.setPosts(postRepository.getPostsCountOnTheDay());
+        } else {
+            calendarResponse.setPosts(postRepository.getPostsInYear(year));
+        }
+        return calendarResponse;
+    }
+
+    public PostsResponse getPostsByTag(Integer offset, Integer limit, String tag) {
+        return getPostResponseByTag(tag);
+    }
+
+/*
+    public CalendarResponse getPostsByDate(String year) {
+        return postRepository.getPostsCountInTheYear();
+    }
+*/
+    private PostsResponse getPostResponseByTag(String tag) {
+        PostsResponse postsResponse = new PostsResponse();
+        postsResponse.setCount(postRepository.getPostsCount());
+        postsResponse.setPosts(getPostResponseListByTag(tag));
+        return postsResponse;
+    }
+
+    private PostsResponse getPostsByUserQuery(String query) {
+        PostsResponse postsResponse = new PostsResponse();
+        postsResponse.setCount(postRepository.getPostsCount());
+        postsResponse.setPosts(getPostResponseListByUserQuery(query));
+        return postsResponse;
     }
 
     private PostsResponse postsByCommentCount() {
@@ -97,9 +118,16 @@ public class PostService {
         return postsResponse;
     }
 
+    public PostsResponse getPostsOnDay(Integer offset, Integer limit, Date date) {
+        PostsResponse postsResponse = new PostsResponse();
+        postsResponse.setCount(postRepository.getPostsCountOnDay(date));
+        postsResponse.setPosts(getPostResponseForOneDay(date));
+        return postsResponse;
+    }
+
     private List<SinglePostResponse> getPostResponseList() {
         List<SinglePostResponse> singlePostResponses = new ArrayList<>();
-        postRepository.getPostsByDate().forEach(posts -> {
+        postRepository.getPostsOrderByDate().forEach(posts -> {
             SinglePostResponse postResponse = new SinglePostResponse();
             UserResponse userResponse = new UserResponse();
             Timestamp timestamp = new Timestamp(posts.getTime().getTime()); //как-то коряво получилось с геттерами, не читаемо
@@ -118,24 +146,93 @@ public class PostService {
         });
         return singlePostResponses;
     }
-/*
-    public Integer getPostsCountInYear(Integer year) {
-        return postRepository.postCountByYear(year);
-    }*/
 
-/*    public Page<Posts> getPostsByDate(Integer offset, Integer limit, Date date) {
-        return postRepository.findPostsByDate(PageRequest.of(offset, limit), date);
-    }*/
-
-/*    public Page<Posts> getPostsByTag(Integer offset, Integer limit, Integer tagId) {
-        return postRepository.findPostsByTag(PageRequest.of(offset, limit), tagId);
+    private List<SinglePostResponse> getPostResponseListByUserQuery(String query) {
+        List<SinglePostResponse> singlePostResponses = new ArrayList<>();
+        postRepository.getPostsByUserQuery(query).forEach(posts -> {
+            SinglePostResponse postResponse = new SinglePostResponse();
+            UserResponse userResponse = new UserResponse();
+            Timestamp timestamp = new Timestamp(posts.getTime().getTime());
+            userResponse.setId(posts.getUserId());
+            userResponse.setName(posts.getUsersId().getName());
+            postResponse.setId(posts.getId());
+            postResponse.setTimestamp(timestamp.getTime());
+            postResponse.setTitle(posts.getText());
+            postResponse.setAnnounce(posts.getText());
+            postResponse.setLikeCount(3);     // не правильно
+            postResponse.setDislikeCount(4);
+            postResponse.setCommentCount(5);
+            postResponse.setViewCount(posts.getViewCount());
+            postResponse.setUserResponse(userResponse);
+            singlePostResponses.add(postResponse);
+        });
+        return singlePostResponses;
     }
 
-    public Posts getPostById(Integer id) {
-        return postRepository.getOne(id);
+    private List<SinglePostResponse> getPostResponseForOneDay(Date date) {
+        List<SinglePostResponse> singlePostResponses = new ArrayList<>();
+        postRepository.getPostsOrderByDate().forEach(posts -> {
+            SinglePostResponse postResponse = new SinglePostResponse();
+            UserResponse userResponse = new UserResponse();
+            Timestamp timestamp = new Timestamp(posts.getTime().getTime());
+
+            if (posts.getTime().equals(date)) {
+                userResponse.setId(posts.getUserId());
+                userResponse.setName(posts.getUsersId().getName());
+                postResponse.setId(posts.getId());
+                postResponse.setTimestamp(timestamp.getTime());
+                postResponse.setTitle(posts.getText());
+                postResponse.setAnnounce(posts.getText());
+                postResponse.setLikeCount(3);
+                postResponse.setDislikeCount(4);
+                postResponse.setCommentCount(5);
+                postResponse.setViewCount(posts.getViewCount());
+                postResponse.setUserResponse(userResponse);
+                singlePostResponses.add(postResponse);
+            }
+        });
+        return singlePostResponses;
     }
 
-    public ResponseEntity<PostsResponse> search(Integer offset, Integer limit, String query) {
-        return ResponseEntity.ok(getAllPosts());        //запрос к репозиторию и через пагинацию(PageRequest) собрать в ответ формата PostResponse
-    }*/
+    private List<SinglePostResponse> getPostResponseListByTag(String tag) {
+        List<SinglePostResponse> singlePostResponses = new ArrayList<>();
+        postRepository.getPostsByTag(tag).forEach(posts -> {
+            SinglePostResponse postResponse = new SinglePostResponse();
+            UserResponse userResponse = new UserResponse();
+            Timestamp timestamp = new Timestamp(posts.getTime().getTime());
+            userResponse.setId(posts.getUserId());
+            userResponse.setName(posts.getUsersId().getName());
+            postResponse.setId(posts.getId());
+            postResponse.setTimestamp(timestamp.getTime());
+            postResponse.setTitle(posts.getText());
+            postResponse.setAnnounce(posts.getText());
+            postResponse.setLikeCount(3);     // не правильно
+            postResponse.setDislikeCount(4);
+            postResponse.setCommentCount(5);
+            postResponse.setViewCount(posts.getViewCount());
+            postResponse.setUserResponse(userResponse);
+            singlePostResponses.add(postResponse);
+        });
+        return singlePostResponses;
+    }
+
+    public SinglePostResponse getPostById(Integer id) {
+        Posts posts = postRepository.getPostsById(id);
+        SinglePostResponse postResponse = new SinglePostResponse();
+        UserResponse userResponse = new UserResponse();
+        Timestamp timestamp = new Timestamp(posts.getTime().getTime());
+        userResponse.setId(posts.getUserId());
+        userResponse.setName(posts.getUsersId().getName());
+        postResponse.setId(posts.getId());
+        postResponse.setTimestamp(timestamp.getTime());
+        postResponse.setTitle(posts.getText());
+        postResponse.setAnnounce(posts.getText());
+        postResponse.setLikeCount(3);
+        postResponse.setDislikeCount(4);
+        postResponse.setCommentCount(5);
+        postResponse.setViewCount(posts.getViewCount());
+        postResponse.setUserResponse(userResponse);
+
+        return postResponse;
+    }
 }

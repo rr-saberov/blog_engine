@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.spring.app.engine.api.response.CalendarResponse;
 import ru.spring.app.engine.api.response.InitResponse;
 import ru.spring.app.engine.api.response.SettingsResponse;
 import ru.spring.app.engine.api.response.TagsResponse;
@@ -49,8 +50,8 @@ public class ApiGeneralController {
         return ResponseEntity.ok(tagService.getTags(query));
     }
 
-//    @GetMapping("/calendar")
-//    private ResponseEntity<Integer> getPostCountInYear(@RequestParam(defaultValue = "2021") Integer year) {
-//        return ResponseEntity.ok(postService.getPostsCountInYear(year));
-//    }
+    @GetMapping("/calendar")
+    private ResponseEntity<CalendarResponse> getPostCountInYear(@RequestParam(defaultValue = "2005") Integer year) {
+        return ResponseEntity.ok(postService.getPostsCountInTheYear(year));
+    }
 }
