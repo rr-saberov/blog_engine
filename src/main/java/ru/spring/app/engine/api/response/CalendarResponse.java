@@ -1,10 +1,10 @@
 package ru.spring.app.engine.api.response;
 
 import lombok.Data;
-import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Data
 public class CalendarResponse {
-
-
+    private List<PostInDayResponse> posts;
 }

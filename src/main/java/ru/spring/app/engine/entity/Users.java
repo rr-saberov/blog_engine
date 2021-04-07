@@ -22,29 +22,22 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "serial")
     private int id;
-
     @Column(nullable = false)
-    private boolean isModerator;
-
+    private int isModerator;
     @Column(nullable = false)
     private Date regTime;
-
     @Column(nullable = false)
     @Size(min = 4, max = 15)
     @Pattern(regexp = "^[0-9\\p{all}}]")
     private String name;
-
     @Column(nullable = false)
     @Pattern(regexp = ".+\\@.+\\.(com|ru)")
     private String email;
-
     @Column(nullable = false)
     @Size(min = 8, max = 25)
     @Pattern(regexp = "^[а-яА-Я]")
     private String password;
-
     private String code;
-
     @Column(columnDefinition = "text")
     private String photo;
 
@@ -54,9 +47,9 @@ public class Users {
 
     @OneToMany
     @JoinColumn(name = "user_posts", referencedColumnName = "id")
-    private List<Posts> postsList = new ArrayList<>();
+    private List<Posts> postsList;
 
     @OneToMany
     @JoinColumn(name = "user_post_votes_id", referencedColumnName = "id")
-    private List<PostVotes> postVotes = new ArrayList<>();
+    private List<PostVotes> postVotes;
 }

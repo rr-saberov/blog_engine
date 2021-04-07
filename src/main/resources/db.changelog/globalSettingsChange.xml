@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="14434343333" author="Ruslan">
+
+        <insert tableName="post_comments">
+            <column name="id" value="1"/>
+            <column name="parent_id" value="1"/>
+            <column name="post_id" value="1"/>
+            <column name="text" value="text"/>
+            <column name="time" value="2005-11-2 20:00:00"/>
+            <column name="user_id" value="1"/>
+        </insert>
+
+        <insert tableName="tags">
+            <column name="id" value="1"/>
+            <column name="name" value="tag name"/>
+        </insert>
+
+
+        <insert tableName="global_settings">
+            <column name="id" value="1"/>
+            <column name="code" value="MULTIUSER_MODE"/>
+            <column name="name" value="Многопользовательский режим"/>
+            <column name="value" value="YES"/>
+        </insert>
+
+        <insert tableName="global_settings">
+            <column name="id" value="2"/>
+            <column name="code" value="POST_MODERATION"/>
+            <column name="name" value="Премодерация постов"/>
+            <column name="value" value="YES"/>
+        </insert>
+
+        <insert tableName="global_settings">
+            <column name="id" value="3"/>
+            <column name="code" value="STATISTICS_IS_PUBLIC"/>
+            <column name="name" value="Показывать всем статистику блога"/>
+            <column name="value" value="NO"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>
