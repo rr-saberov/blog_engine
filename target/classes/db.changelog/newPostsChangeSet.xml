@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="15" author="Ruslan">
+        <insert tableName="posts">
+            <column name="id" value="2"/>
+            <column name="is_active" value="1"/>
+            <column name="moderation_status" value="ACCEPTED"/>
+            <column name="time" value="2020-10-09 20:00:00"/>
+            <column name="text" value="post"/>
+            <column name="view_count" value="55"/>
+            <column name="user_id" value="1"/>
+            <column name="view_count" value="4"/>
+            <column name="moderator_id" value="1"/>
+            <column name="post_comments_id" value="1"/>
+            <column name="posts_votes_id" value="1"/>
+            <column name="moder_id" value="1"/>
+            <column name="users_id" value="1"/>
+            <column name="user_posts" value="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
