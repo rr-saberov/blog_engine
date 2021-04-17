@@ -12,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "posts")
 @ApiModel(description = "data model of posts")
-public class Posts {
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

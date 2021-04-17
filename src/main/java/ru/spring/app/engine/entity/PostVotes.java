@@ -32,6 +32,6 @@ public class PostVotes {
     private Users usersId;
 
     @OneToOne(mappedBy = "postVotes")
-    private Posts postsId;
+    private Post postsId;
 
 }

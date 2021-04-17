@@ -7,5 +7,4 @@ import ru.spring.app.engine.entity.CaptchaCodes;
 @Repository
 public interface CaptchaRepository extends JpaRepository<CaptchaCodes, Long> {
 
-
 }

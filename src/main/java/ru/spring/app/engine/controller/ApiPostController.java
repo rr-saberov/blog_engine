@@ -37,15 +37,15 @@ public class ApiPostController {
     private ResponseEntity<PostsResponse> searchPosts(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "10") Integer limit,
-            @RequestParam(defaultValue = "recent") String query) {
-        return ResponseEntity.ok(postService.search(offset, limit, query));
+            @RequestParam(defaultValue = "test") String query) {
+        return ResponseEntity.ok(postService.getPostsByUserRequest(offset, limit, query));
     }
 
     @GetMapping("/byDate")
     private ResponseEntity<PostsResponse> getPostsByDate(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "5") Integer limit,
-            @RequestParam(defaultValue = "2005-10-09") Date date) {
+            @RequestParam(defaultValue = "2005-10-9") Date date) {
         return ResponseEntity.ok(postService.getPostsOnDay(offset, limit, date));
     }
 
@@ -53,7 +53,7 @@ public class ApiPostController {
     private ResponseEntity<PostsResponse> getPostsByTag(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "10") Integer limit,
-            @RequestParam(defaultValue = "") String tag) {
+            @RequestParam(defaultValue = "tag name") String tag) {
         return ResponseEntity.ok(postService.getPostsByTag(offset, limit, tag));
     }
 
