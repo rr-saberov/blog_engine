@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @Service
 public class CaptchaService {
 
-    private JdbcTemplate jdbcTemplate;
-    private CaptchaRepository captchaRepository;
+    private final JdbcTemplate jdbcTemplate;
+    private final CaptchaRepository captchaRepository;
 
     @Autowired
     public CaptchaService(JdbcTemplate jdbcTemplate, CaptchaRepository captchaRepository) {

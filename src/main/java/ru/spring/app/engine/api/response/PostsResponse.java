@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class PostsResponse {
-    private int count;
+    private Long count;
     private List<SinglePostResponse> posts;
 }

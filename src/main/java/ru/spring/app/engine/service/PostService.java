@@ -1,15 +1,14 @@
 package ru.spring.app.engine.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.response.*;
-import ru.spring.app.engine.entity.Posts;
-import ru.spring.app.engine.entity.Tags;
+import ru.spring.app.engine.entity.Post;
 import ru.spring.app.engine.repository.PostRepository;
 
-import javax.persistence.EntityManager;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-    private EntityManager entityManager;
 
     @Autowired
     public PostService(PostRepository postRepository) {
@@ -31,208 +29,140 @@ public class PostService {
         return postsResponse;
     }
 
-    public PostsResponse getPosts(Integer offset, Integer limit, String mode) {
-        Pageable nextPage = PageRequest.of(offset, limit);
+    public PostsResponse getPosts(Integer page, Integer limit, String mode) {
+        Pageable nextPage = PageRequest.of(page, limit);
         switch (mode) {
             case "popular":
-                return postsByCommentCount();  //как реализовать пагинацию?
+                return postsByCommentCount(nextPage);
             case "best":
-                return postsByLikeCount();
+                return postsByLikeCount(nextPage);
             case "early":
-                return oldPostsByDate();
+                return oldPostsByDate(nextPage);
             default:
-                return postsByDate();
+                return postsByDate(nextPage);
         }
     }
 
-    public PostsResponse search(Integer offset, Integer limit, String query) {
-        return postsByCommentCount();
+    public PostsResponse getPostsByUserRequest(Integer page, Integer limit, String query) {
+        Pageable nextPage = PageRequest.of(page, limit);
+        PostsResponse postsResponse = new PostsResponse();
+        Page<Post> postsPage =
+                postRepository.getPostsByCustomRequest(query + "%", nextPage);
+        postsResponse.setCount(postsPage.getTotalElements());
+        postsResponse.setPosts(postsPage.get().map(this::convertToResponse).collect(Collectors.toList()));
+        return postsResponse;
+    }
+
+    public PostsResponse getPostsOnDay(Integer page, Integer limit, Date date) {
+        Pageable nextPage = PageRequest.of(page, limit);
+        PostsResponse postsResponse = new PostsResponse();
+        Page<Post> postsPage =
+                postRepository.getPostsPerDay(date, nextPage);
+        postsResponse.setCount(postsPage.getTotalElements());
+        postsResponse.setPosts(postsPage.get().map(this::convertToResponse).collect(Collectors.toList()));
+        return postsResponse;
+    }
+
+    public PostsResponse getPostsByTag(Integer page, Integer limit, String tag) {
+        Pageable nextPage = PageRequest.of(page, limit);
+        PostsResponse postsResponse = new PostsResponse();
+        Page<Post> postsPage =
+                postRepository.getPostsWithTag(tag, nextPage);
+        postsResponse.setCount(postsPage.getTotalElements());
+        postsResponse.setPosts(postsPage.get().map(this::convertToResponse).collect(Collectors.toList()));
+        return postsResponse;
     }
 
     public CalendarResponse getPostsCountInTheYear(Integer year) {
-        CalendarResponse calendarResponse = new CalendarResponse();
+        CalendarResponse calendarResponse;
         if (year == 0) {
-            calendarResponse.setPosts(postRepository.getPostsCountOnTheDay());
+            calendarResponse = convertMapToResponse();
         } else {
-            calendarResponse.setPosts(postRepository.getPostsInYear(year));
+            calendarResponse = convertMapToResponse(year);
         }
         return calendarResponse;
     }
 
-    public PostsResponse getPostsByTag(Integer offset, Integer limit, String tag) {
-        return getPostResponseByTag(tag);
-    }
-
-/*
-    public CalendarResponse getPostsByDate(String year) {
-        return postRepository.getPostsCountInTheYear();
-    }
-*/
-    private PostsResponse getPostResponseByTag(String tag) {
-        PostsResponse postsResponse = new PostsResponse();
-        postsResponse.setCount(postRepository.getPostsCount());
-        postsResponse.setPosts(getPostResponseListByTag(tag));
-        return postsResponse;
-    }
-
-    private PostsResponse getPostsByUserQuery(String query) {
-        PostsResponse postsResponse = new PostsResponse();
-        postsResponse.setCount(postRepository.getPostsCount());
-        postsResponse.setPosts(getPostResponseListByUserQuery(query));
-        return postsResponse;
-    }
-
-    private PostsResponse postsByCommentCount() {
-        PostsResponse postsResponse = new PostsResponse();
-        postsResponse.setCount(postRepository.getPostsCount());
-        postsResponse.setPosts(getPostResponseList().stream()
-                .sorted(Comparator.comparingInt(SinglePostResponse::getCommentCount))
-                .collect(Collectors.toList()));
-        return postsResponse;
-    }
-
-    private PostsResponse postsByLikeCount() {
-        PostsResponse postsResponse = new PostsResponse();
-        postsResponse.setCount(postRepository.getPostsCount());
-        postsResponse.setPosts(getPostResponseList().stream()
-                .sorted(Comparator.comparingInt(SinglePostResponse::getLikeCount))
-                .collect(Collectors.toList()));
-        return postsResponse;
-    }
-
-    private PostsResponse postsByDate() {
-        PostsResponse postsResponse = new PostsResponse();
-        postsResponse.setCount(postRepository.getPostsCount());
-        postsResponse.setPosts(getPostResponseList().stream()
-                .sorted(Comparator.comparing(SinglePostResponse::getTimestamp))
-                .collect(Collectors.toList()));
-        return postsResponse;
-    }
-
-    private PostsResponse oldPostsByDate() {
-        PostsResponse postsResponse = new PostsResponse();
-        postsResponse.setCount(postRepository.getPostsCount());
-        postsResponse.setPosts(getPostResponseList().stream()
-                .sorted(Comparator.comparing(SinglePostResponse::getTimestamp).reversed())
-                .collect(Collectors.toList()));
-        return postsResponse;
-    }
-
-    public PostsResponse getPostsOnDay(Integer offset, Integer limit, Date date) {
-        PostsResponse postsResponse = new PostsResponse();
-        postsResponse.setCount(postRepository.getPostsCountOnDay(date));
-        postsResponse.setPosts(getPostResponseForOneDay(date));
-        return postsResponse;
-    }
-
-    private List<SinglePostResponse> getPostResponseList() {
-        List<SinglePostResponse> singlePostResponses = new ArrayList<>();
-        postRepository.getPostsOrderByDate().forEach(posts -> {
-            SinglePostResponse postResponse = new SinglePostResponse();
-            UserResponse userResponse = new UserResponse();
-            Timestamp timestamp = new Timestamp(posts.getTime().getTime()); //как-то коряво получилось с геттерами, не читаемо
-            userResponse.setId(posts.getUserId());
-            userResponse.setName(posts.getUsersId().getName());
-            postResponse.setId(posts.getId());
-            postResponse.setTimestamp(timestamp.getTime());
-            postResponse.setTitle(posts.getText());
-            postResponse.setAnnounce(posts.getText());
-            postResponse.setLikeCount(3);     // не правильно
-            postResponse.setDislikeCount(4);
-            postResponse.setCommentCount(5);
-            postResponse.setViewCount(posts.getViewCount());
-            postResponse.setUserResponse(userResponse);
-            singlePostResponses.add(postResponse);
-        });
-        return singlePostResponses;
-    }
-
-    private List<SinglePostResponse> getPostResponseListByUserQuery(String query) {
-        List<SinglePostResponse> singlePostResponses = new ArrayList<>();
-        postRepository.getPostsByUserQuery(query).forEach(posts -> {
-            SinglePostResponse postResponse = new SinglePostResponse();
-            UserResponse userResponse = new UserResponse();
-            Timestamp timestamp = new Timestamp(posts.getTime().getTime());
-            userResponse.setId(posts.getUserId());
-            userResponse.setName(posts.getUsersId().getName());
-            postResponse.setId(posts.getId());
-            postResponse.setTimestamp(timestamp.getTime());
-            postResponse.setTitle(posts.getText());
-            postResponse.setAnnounce(posts.getText());
-            postResponse.setLikeCount(3);     // не правильно
-            postResponse.setDislikeCount(4);
-            postResponse.setCommentCount(5);
-            postResponse.setViewCount(posts.getViewCount());
-            postResponse.setUserResponse(userResponse);
-            singlePostResponses.add(postResponse);
-        });
-        return singlePostResponses;
-    }
-
-    private List<SinglePostResponse> getPostResponseForOneDay(Date date) {
-        List<SinglePostResponse> singlePostResponses = new ArrayList<>();
-        postRepository.getPostsOrderByDate().forEach(posts -> {
-            SinglePostResponse postResponse = new SinglePostResponse();
-            UserResponse userResponse = new UserResponse();
-            Timestamp timestamp = new Timestamp(posts.getTime().getTime());
-
-            if (posts.getTime().equals(date)) {
-                userResponse.setId(posts.getUserId());
-                userResponse.setName(posts.getUsersId().getName());
-                postResponse.setId(posts.getId());
-                postResponse.setTimestamp(timestamp.getTime());
-                postResponse.setTitle(posts.getText());
-                postResponse.setAnnounce(posts.getText());
-                postResponse.setLikeCount(3);
-                postResponse.setDislikeCount(4);
-                postResponse.setCommentCount(5);
-                postResponse.setViewCount(posts.getViewCount());
-                postResponse.setUserResponse(userResponse);
-                singlePostResponses.add(postResponse);
-            }
-        });
-        return singlePostResponses;
-    }
-
-    private List<SinglePostResponse> getPostResponseListByTag(String tag) {
-        List<SinglePostResponse> singlePostResponses = new ArrayList<>();
-        postRepository.getPostsByTag(tag).forEach(posts -> {
-            SinglePostResponse postResponse = new SinglePostResponse();
-            UserResponse userResponse = new UserResponse();
-            Timestamp timestamp = new Timestamp(posts.getTime().getTime());
-            userResponse.setId(posts.getUserId());
-            userResponse.setName(posts.getUsersId().getName());
-            postResponse.setId(posts.getId());
-            postResponse.setTimestamp(timestamp.getTime());
-            postResponse.setTitle(posts.getText());
-            postResponse.setAnnounce(posts.getText());
-            postResponse.setLikeCount(3);     // не правильно
-            postResponse.setDislikeCount(4);
-            postResponse.setCommentCount(5);
-            postResponse.setViewCount(posts.getViewCount());
-            postResponse.setUserResponse(userResponse);
-            singlePostResponses.add(postResponse);
-        });
-        return singlePostResponses;
-    }
-
     public SinglePostResponse getPostById(Integer id) {
-        Posts posts = postRepository.getPostsById(id);
+        Post post = postRepository.getPostsById(id);
+        return convertToResponse(post);
+    }
+
+    //methods for get responses
+
+    private CalendarResponse convertMapToResponse() {
+        CalendarResponse calendarResponse = new CalendarResponse();
+        List<PostInDayResponse> postInDayResponses = new ArrayList<>();
+        postRepository.getPostsCountOnTheDay().forEach((key, value) -> {
+            PostInDayResponse response = new PostInDayResponse(key, value);
+            postInDayResponses.add(response);
+        });
+        calendarResponse.setPosts(postInDayResponses);
+        return calendarResponse;
+    }
+
+    private CalendarResponse convertMapToResponse(Integer year) {
+        CalendarResponse calendarResponse = new CalendarResponse();
+        List<PostInDayResponse> postInDayResponses = new ArrayList<>();
+        postRepository.getPostsInYear(year).forEach((key, value) -> {
+            PostInDayResponse response = new PostInDayResponse(key, value);
+            postInDayResponses.add(response);
+        });
+        calendarResponse.setPosts(postInDayResponses);
+        return calendarResponse;
+    }
+
+    private PostsResponse postsByCommentCount(Pageable pageable) {
+        PostsResponse postsResponse = new PostsResponse();
+        Page<Post> postsPage =
+                postRepository.getPostsOrderByCommentCount(pageable);
+        postsResponse.setCount(postsPage.getTotalElements());
+        postsResponse.setPosts(postsPage.get().map(this::convertToResponse).collect(Collectors.toList()));
+        return postsResponse;
+    }
+
+    private PostsResponse postsByLikeCount(Pageable pageable) {
+        PostsResponse postsResponse = new PostsResponse();
+        Page<Post> postsPage =
+                postRepository.getPostsOrderByLikeCount(pageable);
+        postsResponse.setCount(postsPage.getTotalElements());
+        postsResponse.setPosts(postsPage.get().map(this::convertToResponse).collect(Collectors.toList()));
+        return postsResponse;
+    }
+
+    private PostsResponse postsByDate(Pageable pageable) {
+        PostsResponse postsResponse = new PostsResponse();
+        Page<Post> postsPage =
+                postRepository.getPostsOrderByTime(pageable);
+        postsResponse.setCount(postsPage.getTotalElements());
+        postsResponse.setPosts(postsPage.get().map(this::convertToResponse).collect(Collectors.toList()));
+        return postsResponse;
+    }
+
+    private PostsResponse oldPostsByDate(Pageable pageable) {
+        PostsResponse postsResponse = new PostsResponse();
+        Page<Post> postsPage =
+                postRepository.getOldPostsOrderByTime(pageable);
+        postsResponse.setCount(postsPage.getTotalElements());
+        postsResponse.setPosts(postsPage.get().map(this::convertToResponse).collect(Collectors.toList()));
+        return postsResponse;
+    }
+
+    private SinglePostResponse convertToResponse(Post post) {
         SinglePostResponse postResponse = new SinglePostResponse();
         UserResponse userResponse = new UserResponse();
-        Timestamp timestamp = new Timestamp(posts.getTime().getTime());
-        userResponse.setId(posts.getUserId());
-        userResponse.setName(posts.getUsersId().getName());
-        postResponse.setId(posts.getId());
+        Timestamp timestamp = new Timestamp(post.getTime().getTime());
+        userResponse.setId(post.getUserId());
+        userResponse.setName(post.getUsersId().getName());
+        postResponse.setId(post.getId());
         postResponse.setTimestamp(timestamp.getTime());
-        postResponse.setTitle(posts.getText());
-        postResponse.setAnnounce(posts.getText());
-        postResponse.setLikeCount(3);
+        postResponse.setTitle(post.getText());
+        postResponse.setAnnounce(post.getText());
+        postResponse.setLikeCount(post.getPostVotes().getValue());
         postResponse.setDislikeCount(4);
         postResponse.setCommentCount(5);
-        postResponse.setViewCount(posts.getViewCount());
+        postResponse.setViewCount(post.getViewCount());
         postResponse.setUserResponse(userResponse);
-
         return postResponse;
     }
 }

@@ -5,21 +5,6 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     <changeSet id="14434343333" author="Ruslan">
 
-        <insert tableName="post_comments">
-            <column name="id" value="1"/>
-            <column name="parent_id" value="1"/>
-            <column name="post_id" value="1"/>
-            <column name="text" value="text"/>
-            <column name="time" value="2005-11-2 20:00:00"/>
-            <column name="user_id" value="1"/>
-        </insert>
-
-        <insert tableName="tags">
-            <column name="id" value="1"/>
-            <column name="name" value="tag name"/>
-        </insert>
-
-
         <insert tableName="global_settings">
             <column name="id" value="1"/>
             <column name="code" value="MULTIUSER_MODE"/>

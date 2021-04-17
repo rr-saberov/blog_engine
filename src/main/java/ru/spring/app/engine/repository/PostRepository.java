@@ -5,102 +5,86 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.spring.app.engine.api.response.CalendarResponse;
-import ru.spring.app.engine.api.response.PostInDayResponse;
-import ru.spring.app.engine.api.response.PostsResponse;
-import ru.spring.app.engine.entity.Posts;
+import org.springframework.stereotype.Repository;
+import ru.spring.app.engine.entity.Post;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
-public interface PostRepository extends JpaRepository<Posts, Integer> {
+@Repository
+public interface PostRepository extends JpaRepository<Post, Integer> {
 
-    @Query("SELECT p " +
-            "FROM Posts p " +
-            "LEFT JOIN Users u ON u.id = p.userId " +
-            "LEFT JOIN PostComments pc ON pc.postId = p.id " +
-            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id AND pvl.value = 1 " +
-            "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' AND p.time <= CURRENT_DATE " +
-            "GROUP BY p.id " +
-            "ORDER BY p.time DESC")
-    List<Posts> getPostsOrderByDate();
-
-    @Query("SELECT p " +
-            "FROM Posts p " +
-            "LEFT JOIN Users u ON u.id = p.userId " +
-            "LEFT JOIN PostComments pc ON pc.postId = p.id " +
-            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id AND pvl.value = 1 " +
-            "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' AND p.time <= CURRENT_DATE " +
-            "GROUP BY p.id " +
-            "ORDER BY p.time DESC")
-    List<Posts> getPostsByDate();
-
-    @Query("SELECT COUNT (p) " +
-            "FROM Posts p " +
-            "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' AND p.time <= CURRENT_DATE ")
-    Integer getPostsCount();
-
+    Post getPostsById(Integer id);
 
     @Query(value = "SELECT EXTRACT(YEAR from time) as year, COUNT(*) as amount_posts " +
             "FROM posts " +
+            "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND time <= current_date " +
             "GROUP BY year " +
             "ORDER BY year", nativeQuery = true)
-    List<PostInDayResponse> getPostsCountOnTheDay();
+    Map<Integer, Long> getPostsCountOnTheDay();
 
     @Query(value = "SELECT EXTRACT(YEAR from time) as year, COUNT(*) as amount_posts " +
             "FROM posts " +
-            "WHERE year = :year " +
+            "WHERE EXTRACT(YEAR from time) = :year AND is_active = 1 AND moderation_status = 'ACCEPTED' AND time <= current_date " +
             "GROUP BY year " +
             "ORDER BY year", nativeQuery = true)
-    List<PostInDayResponse> getPostsInYear(@Param("year") Integer year);
+    Map<Integer, Long> getPostsInYear(@Param("year") Integer year);
 
+    @Query(value = "SELECT COUNT (*) " +
+            "FROM posts " +
+            "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND time <= current_date", nativeQuery = true)
+    Long getPostsCount();
 
-    @Query("SELECT p.time " +
-            "FROM Posts p " +
-            "GROUP BY p.time " +
+    @Query(value = "SELECT COUNT (*) " +
+            "FROM posts " +
+            "JOIN tag2post ON posts.id = tag2post.posts_id " +
+            "JOIN tags ON tags.id = tag2post.tags_id " +
+            "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND time <= current_date AND name = :tag", nativeQuery = true)
+    Long getPostsCountWithTag(@Param("tag") String tag);
+
+    @Query("SELECT p " +
+            "FROM Post p " +
+            "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' AND p.time <= CURRENT_DATE " +
+            "AND p.time = :postDate " +
+            "ORDER BY p.time DESC")
+    Page<Post> getPostsPerDay(@Param("postDate") Date postDate, Pageable pageable);
+
+    @Query(value = "SELECT * " +
+            "FROM posts " +
+            "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND time <= current_date " +
+            "ORDER BY (SELECT SUM (post_id) FROM post_comments)", nativeQuery = true)
+    Page<Post> getPostsOrderByCommentCount(Pageable pageable);
+
+    @Query(value = "SELECT * " +
+            "FROM posts " +
+            "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND time <= current_date " +
+            "ORDER BY (SELECT SUM (value) FROM post_votes WHERE value = 1);", nativeQuery = true)
+    Page<Post> getPostsOrderByLikeCount(Pageable pageable);
+
+    @Query("FROM Post p " +
+            "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' AND p.time <= CURRENT_DATE " +
             "ORDER BY p.time")
-    List<Integer> getYears();
+    Page<Post> getPostsOrderByTime(Pageable pageable);
 
-    @Query(value = ":query", nativeQuery = true)
-    List<Posts> getPostsByUserQuery(@Param("query") String query);
-
-
-    @Query("SELECT p " +
-            "FROM Posts p " +
-            "JOIN Tags t " +
+    @Query("FROM Post p " +
             "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' AND p.time <= CURRENT_DATE " +
-            "AND t.name = :tag " +
-            "GROUP BY p.id " +
             "ORDER BY p.time DESC")
-    List<Posts> getPostsByTag(@Param("tag") String tag);
+    Page<Post> getOldPostsOrderByTime(Pageable pageable);
 
-    @Query("SELECT p " +
-            "FROM Posts p " +
-            "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' AND p.time <= CURRENT_DATE " +
-            "AND p.time = :postDate")
-    List<Posts> getPostsInDay(@Param("postDate") Date postDate);
+    @Query(value = "SELECT * " +
+            "FROM posts " +
+            "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND time <= current_date " +
+            "AND text LIKE :query " +
+            "ORDER BY time DESC", nativeQuery = true)
+    Page<Post> getPostsByCustomRequest(@Param("query") String query, Pageable pageable);
 
-    @Query("SELECT COUNT (p) " +
-            "FROM Posts p " +
-            "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' AND p.time <= CURRENT_DATE " +
-            "AND p.time = :postDate")
-    Integer getPostsCountOnDay(@Param("postDate") Date postDate);
+    @Query(value = "SELECT * FROM posts " +
+            "JOIN tag2post ON posts.id = tag2post.posts_id " +
+            "JOIN tags ON tags.id = tag2post.tags_id " +
+            "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' " +
+            "AND time <= current_date AND name = :tag", nativeQuery = true)
+    Page<Post> getPostsWithTag(@Param("tag") String tag, Pageable nextPage);
 
-    Posts getPostsById(Integer id);
-
-
-
-    @Query("SELECT p " +
-            "FROM Posts p " +
-            "LEFT JOIN Users u ON u.id = p.userId " +
-            "LEFT JOIN PostComments pc ON pc.postId = p.id " +
-            "LEFT JOIN PostVotes pvl ON pvl.postId = p.id " +
-            "LEFT JOIN Tag2Post t2p ON t2p.postId = p.id " +
-            "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' AND p.time <= CURRENT_DATE " +
-            "AND t2p.tagId  = ?2 " +
-            "GROUP BY p.id ")
-    Page<Posts> findPostsByTag(Pageable pageable, Integer tagId);
 
 }
 

@@ -29,7 +29,7 @@ public class PostComments {
     private String text;
 
     @OneToOne(mappedBy = "postComments")
-    private Posts postsId;
+    private Post postsId;
     @OneToOne(mappedBy = "postsComments")
     private Users usersId;
 }

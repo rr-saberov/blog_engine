@@ -48,7 +48,7 @@
         <insert tableName="posts">
             <column name="id" value="1"/>
             <column name="is_active" value="1"/>
-            <column name="moderation_status" value="NEW"/>
+            <column name="moderation_status" value="ACCEPTED"/>
             <column name="time" value="2005-10-09 20:00:00"/>
             <column name="text" value="test_text"/>
             <column name="view_count" value="55"/>

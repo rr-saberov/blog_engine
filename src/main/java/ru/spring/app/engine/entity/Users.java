@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,14 +27,14 @@ public class Users {
     private Date regTime;
     @Column(nullable = false)
     @Size(min = 4, max = 15)
-    @Pattern(regexp = "^[0-9\\p{all}}]")
+/*    @Pattern(regexp = "[^0-9\\p{all}]")*/
     private String name;
     @Column(nullable = false)
     @Pattern(regexp = ".+\\@.+\\.(com|ru)")
     private String email;
     @Column(nullable = false)
     @Size(min = 8, max = 25)
-    @Pattern(regexp = "^[а-яА-Я]")
+/*    @Pattern(regexp = "[^а-яА-Я]")*/
     private String password;
     private String code;
     @Column(columnDefinition = "text")
@@ -47,7 +46,7 @@ public class Users {
 
     @OneToMany
     @JoinColumn(name = "user_posts", referencedColumnName = "id")
-    private List<Posts> postsList;
+    private List<Post> postsList;
 
     @OneToMany
     @JoinColumn(name = "user_post_votes_id", referencedColumnName = "id")
