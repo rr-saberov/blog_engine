@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -40,4 +41,8 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "users_id")
     private Users usersId;
+
+    @OneToMany
+    @JoinColumn(name = "post_votes_id", referencedColumnName = "id")
+    private List<PostVotes> postVotes;
 }

@@ -31,4 +31,7 @@ public class PostVotes {
     @JoinColumn(name = "users_id")
     private Users usersId;
 
+    @ManyToOne
+    @JoinColumn(name = "posts_id")
+    private Post postsId;
 }

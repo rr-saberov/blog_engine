@@ -163,8 +163,8 @@ public class PostService {
         postResponse.setTimestamp(timestamp.getSeconds());
         postResponse.setTitle(post.getText());
         postResponse.setAnnounce(post.getText());
-        postResponse.setLikeCount(postRepository.getLikeCountOnPost(post.getId()));
-        postResponse.setDislikeCount(postRepository.getDislikeCountOnPost(post.getId()));
+        postResponse.setLikeCount(post.getPostVotes().stream().filter(v -> v.getValue() == 1).count());
+        postResponse.setDislikeCount(post.getPostVotes().stream().filter(v -> v.getValue() == - 1).count());
         postResponse.setCommentCount(5);
         postResponse.setViewCount(post.getViewCount());
         postResponse.setUserResponse(userResponse);

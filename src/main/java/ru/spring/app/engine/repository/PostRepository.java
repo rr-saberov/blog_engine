@@ -65,18 +65,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     //subsidiary method
 
-    @Query(value = "SELECT COUNT (*) " +
-            "FROM posts " +
-            "JOIN post_votes on posts.posts_votes_id = post_votes.id " +
-            "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND post_id = :id AND value = 1", nativeQuery = true)
-    long getLikeCountOnPost(@Param("id") Integer postId);
-
-    @Query(value = "SELECT COUNT (*) " +
-            "FROM posts " +
-            "JOIN post_votes on posts.posts_votes_id = post_votes.id " +
-            "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND post_id = :id AND value = -1", nativeQuery = true)
-    long getDislikeCountOnPost(int id);
-
     @Query(value = "SELECT EXTRACT(YEAR from time) as year, COUNT(*) as amount_posts " +
             "FROM posts " +
             "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND time <= current_date " +
