@@ -2,6 +2,7 @@ package ru.spring.app.engine.controller;
 
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +46,8 @@ public class ApiPostController {
     private ResponseEntity<PostsResponse> getPostsByDate(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "5") Integer limit,
-            @RequestParam(defaultValue = "2005-10-9") Date date) {
+            @RequestParam(defaultValue = "2005-10-9")
+            @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
         return ResponseEntity.ok(postService.getPostsOnDay(offset, limit, date));
     }
 

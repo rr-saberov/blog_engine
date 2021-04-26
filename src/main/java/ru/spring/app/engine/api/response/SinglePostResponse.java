@@ -11,8 +11,8 @@ public class SinglePostResponse {
     private UserResponse userResponse;
     private String title;
     private String announce;
-    private int likeCount;
-    private int dislikeCount;
+    private long likeCount;
+    private long dislikeCount;
     private int commentCount;
     private int viewCount;
 }

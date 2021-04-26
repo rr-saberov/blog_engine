@@ -31,7 +31,4 @@ public class PostVotes {
     @JoinColumn(name = "users_id")
     private Users usersId;
 
-    @OneToOne(mappedBy = "postVotes")
-    private Post postsId;
-
 }

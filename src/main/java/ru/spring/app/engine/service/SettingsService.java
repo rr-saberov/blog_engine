@@ -21,14 +21,11 @@ public class SettingsService {
 
     public SettingsResponse getGlobalSettings() {
         SettingsResponse settingsResponse = new SettingsResponse();
-
         Map<String, Boolean> map = settingsRepository.findAll().stream()
                 .collect(Collectors.toMap(GlobalSettings::getCode, settings -> settings.getValue().equals("YES")));
-
         settingsResponse.setMultiuserMode(map.get("MULTIUSER_MODE"));
         settingsResponse.setPostPremoderation(map.get("POST_MODERATION"));
         settingsResponse.setStatisticsIsPublic(map.get("STATISTICS_IS_PUBLIC"));
-
         return settingsResponse;
     }
 }

@@ -41,7 +41,7 @@ public class ApiGeneralController {
     }
 
     @GetMapping("/calendar")
-    public ResponseEntity<CalendarResponse> getPostCountInYear(@RequestParam(defaultValue = "2005") Integer year) {
+    public ResponseEntity<CalendarResponse> getPostCountInYear(@RequestParam(defaultValue = "2021") Integer year) {
         return ResponseEntity.ok(postService.getPostsCountInTheYear(year));
     }
 }

@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.spring.app.engine.api.response.CaptchaResponse;
 import ru.spring.app.engine.api.response.RegistrationResponse;
 import ru.spring.app.engine.entity.Users;
 import ru.spring.app.engine.service.AuthService;
@@ -31,8 +32,8 @@ public class ApiAuthController {
     }
 
     @GetMapping("/captcha")
-    public ResponseEntity<Boolean> captcha(@RequestParam String code) throws IOException {
-        return ResponseEntity.ok(captchaService.validCaptcha(code));
+    public ResponseEntity<CaptchaResponse> captcha(@RequestParam String code) throws IOException {
+        return ResponseEntity.ok(captchaService.generateCaptcha());
     }
 
     @PostMapping("/register")

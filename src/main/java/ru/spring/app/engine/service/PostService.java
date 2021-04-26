@@ -1,5 +1,6 @@
 package ru.spring.app.engine.service;
 
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +10,9 @@ import ru.spring.app.engine.api.response.*;
 import ru.spring.app.engine.entity.Post;
 import ru.spring.app.engine.repository.PostRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,6 +21,7 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    EntityManager entityManager;
 
     @Autowired
     public PostService(PostRepository postRepository) {
@@ -29,8 +34,8 @@ public class PostService {
         return postsResponse;
     }
 
-    public PostsResponse getPosts(Integer page, Integer limit, String mode) {
-        Pageable nextPage = PageRequest.of(page, limit);
+    public PostsResponse getPosts(Integer offset, Integer limit, String mode) {
+        Pageable nextPage = PageRequest.of(offset, limit);
         switch (mode) {
             case "popular":
                 return postsByCommentCount(nextPage);
@@ -43,8 +48,8 @@ public class PostService {
         }
     }
 
-    public PostsResponse getPostsByUserRequest(Integer page, Integer limit, String query) {
-        Pageable nextPage = PageRequest.of(page, limit);
+    public PostsResponse getPostsByUserRequest(Integer offset, Integer limit, String query) {
+        Pageable nextPage = PageRequest.of(offset, limit);
         PostsResponse postsResponse = new PostsResponse();
         Page<Post> postsPage =
                 postRepository.getPostsByCustomRequest(query + "%", nextPage);
@@ -53,8 +58,8 @@ public class PostService {
         return postsResponse;
     }
 
-    public PostsResponse getPostsOnDay(Integer page, Integer limit, Date date) {
-        Pageable nextPage = PageRequest.of(page, limit);
+    public PostsResponse getPostsOnDay(Integer offset, Integer limit, Date date) {
+        Pageable nextPage = PageRequest.of(offset, limit);
         PostsResponse postsResponse = new PostsResponse();
         Page<Post> postsPage =
                 postRepository.getPostsPerDay(date, nextPage);
@@ -63,8 +68,8 @@ public class PostService {
         return postsResponse;
     }
 
-    public PostsResponse getPostsByTag(Integer page, Integer limit, String tag) {
-        Pageable nextPage = PageRequest.of(page, limit);
+    public PostsResponse getPostsByTag(Integer offset, Integer limit, String tag) {
+        Pageable nextPage = PageRequest.of(offset, limit);
         PostsResponse postsResponse = new PostsResponse();
         Page<Post> postsPage =
                 postRepository.getPostsWithTag(tag, nextPage);
@@ -84,8 +89,8 @@ public class PostService {
     }
 
     public SinglePostResponse getPostById(Integer id) {
-        Post post = postRepository.getPostsById(id);
-        return convertToResponse(post);
+        postRepository.updatePostInfo(postRepository.getPostsById(id).getViewCount() + 1, id);
+        return convertToResponse(postRepository.getPostsById(id));
     }
 
     //methods for get responses
@@ -155,11 +160,11 @@ public class PostService {
         userResponse.setId(post.getUserId());
         userResponse.setName(post.getUsersId().getName());
         postResponse.setId(post.getId());
-        postResponse.setTimestamp(timestamp.getTime());
+        postResponse.setTimestamp(timestamp.getSeconds());
         postResponse.setTitle(post.getText());
         postResponse.setAnnounce(post.getText());
-        postResponse.setLikeCount(post.getPostVotes().getValue());
-        postResponse.setDislikeCount(4);
+        postResponse.setLikeCount(postRepository.getLikeCountOnPost(post.getId()));
+        postResponse.setDislikeCount(postRepository.getDislikeCountOnPost(post.getId()));
         postResponse.setCommentCount(5);
         postResponse.setViewCount(post.getViewCount());
         postResponse.setUserResponse(userResponse);
