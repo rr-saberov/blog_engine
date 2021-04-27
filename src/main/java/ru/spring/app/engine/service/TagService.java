@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.response.SingleTagResponse;
 import ru.spring.app.engine.api.response.TagsResponse;
-import ru.spring.app.engine.entity.Tags;
-import ru.spring.app.engine.repository.PostRepository;
 import ru.spring.app.engine.repository.TagRepository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +31,12 @@ public class TagService {
                 }
                 singleTagResponses.add(tagResponse);
             });
-        return new TagsResponse(singleTagResponses);
+
+        List<SingleTagResponse> responses = singleTagResponses.stream()
+                .sorted(Comparator.comparing(SingleTagResponse::getWeight).reversed())
+                .collect(Collectors.toList());
+
+        return new TagsResponse(responses);
     }
 
     private Double getTagWeight(String tagName) {

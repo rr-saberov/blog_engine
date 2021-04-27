@@ -35,8 +35,8 @@ public class CaptchaService {
         String token = cage.getTokenGenerator().next();
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 
-        byte[] fileContent = cage.draw(cage.getTokenGenerator().next());
-        encodedString = Base64.getEncoder().encodeToString(fileContent);
+        byte[] fileContent = cage.draw(token);
+        encodedString = "data:image/png;base64, " + Base64.getEncoder().encodeToString(fileContent);
 
         parameterSource.addValue("date", java.time.LocalDateTime.now());
         parameterSource.addValue("code", token);
@@ -61,6 +61,4 @@ public class CaptchaService {
 
         return captchaCodes.getCode().equals(code);
     }
-
-
 }
