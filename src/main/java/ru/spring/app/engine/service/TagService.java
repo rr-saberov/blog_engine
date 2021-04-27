@@ -36,11 +36,6 @@ public class TagService {
         return new TagsResponse(singleTagResponses);
     }
 
-/*    public Map<Integer, String> getPostsByTag(Tags tag) {
-        return tagRepository.findAll().stream().filter(tags -> tags.getName().equals(tag.getName()))
-                .collect(Collectors.toMap(Tags::getId, Tags::getName));
-    }*/
-
     private Double getTagWeight(String tagName) {
         return (double) tagRepository.getPostsCountWithTag(tagName) / tagRepository.getPostsCount();
     }
