@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Service;
+import ru.spring.app.engine.api.response.CaptchaResponse;
 import ru.spring.app.engine.entity.CaptchaCodes;
 import ru.spring.app.engine.repository.CaptchaRepository;
 
@@ -27,21 +28,27 @@ public class CaptchaService {
         this.captchaRepository = captchaRepository;
     }
 
-    public void generateCaptcha() {
+    public CaptchaResponse generateCaptcha() {
         String encodedString;
         Cage cage = new GCage();
+        CaptchaResponse response = new CaptchaResponse();
         String token = cage.getTokenGenerator().next();
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
 
-        byte[] fileContent = cage.draw(cage.getTokenGenerator().next());
-        encodedString = Base64.getEncoder().encodeToString(fileContent);
+        byte[] fileContent = cage.draw(token);
+        encodedString = "data:image/png;base64, " + Base64.getEncoder().encodeToString(fileContent);
 
         parameterSource.addValue("date", java.time.LocalDateTime.now());
         parameterSource.addValue("code", token);
         parameterSource.addValue("secret_code", encodedString);
 
+        response.setSecret(token);
+        response.setImage(encodedString);
+
         jdbcTemplate.update("INSERT INTO captcha_codes(date, code, secret_code) " +
                 "VALUES (:date, :code, :secret_code)", parameterSource);
+
+        return response;
     }
 
     public boolean validCaptcha(String code) throws IOException {

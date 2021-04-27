@@ -1,6 +1,7 @@
 package ru.spring.app.engine.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.response.AuthResponse;
 import ru.spring.app.engine.api.response.RegistrationResponse;
@@ -21,7 +22,7 @@ public class AuthService {
         this.userRepository = userRepository;
     }
 
-    public AuthResponse authResponse(Users user) {
+/*    public AuthResponse authResponse(Users user) {
         AuthResponse authResponse = new AuthResponse();
 
         Map<String, String> usersMap = userRepository.findAll().stream()
@@ -31,22 +32,25 @@ public class AuthService {
                 (usersMap.containsKey(user.getName()) && usersMap.containsValue(user.getPassword()));
 
         return authResponse;
-    }
+    }*/
 
     public RegistrationResponse newUserRegistration(String email, String password, String name,
                                     String captcha, String captchaSecret) {
         Users user = new Users();
         user.setEmail(email);
+        user.setIsModerator(-1);
         user.setPassword(password);
         user.setName(name);
         user.setRegTime(new Date(System.currentTimeMillis()));
         userRepository.save(user);
         return new RegistrationResponse(email, password, name, captcha, captchaSecret);
     }
+/*
 
     public RegistrationResponse registrationResponse(Users user) {
         return null;
     }
+*/
 
 /*    public PostsResponse getPostsByTag(Integer page, Integer limit, String tag) {
         Pageable nextPage = PageRequest.of(page, limit);

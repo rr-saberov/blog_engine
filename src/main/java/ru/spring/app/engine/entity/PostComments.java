@@ -28,8 +28,6 @@ public class PostComments {
     @Column(nullable = false, columnDefinition = "text")
     private String text;
 
-    @OneToOne(mappedBy = "postComments")
-    private Post postsId;
     @OneToOne(mappedBy = "postsComments")
     private Users usersId;
 }

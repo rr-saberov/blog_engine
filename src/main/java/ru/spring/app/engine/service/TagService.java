@@ -4,36 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.response.SingleTagResponse;
 import ru.spring.app.engine.api.response.TagsResponse;
-import ru.spring.app.engine.entity.Tags;
-import ru.spring.app.engine.repository.PostRepository;
 import ru.spring.app.engine.repository.TagRepository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class TagService {
 
     private final TagRepository tagRepository;
-    private final PostRepository postRepository;
 
     @Autowired
-    public TagService(TagRepository tagRepository, PostRepository postRepository) {
+    public TagService(TagRepository tagRepository) {
         this.tagRepository = tagRepository;
-        this.postRepository = postRepository;
-    }
-
-    public TagsResponse getTags() {
-        List<SingleTagResponse> singleTagResponses = new ArrayList<>();
-        tagRepository.getTagsOrderByPopularity().forEach(tags -> {
-                SingleTagResponse tagResponse = new SingleTagResponse();
-                tagResponse.setName(tags.getName());
-                tagResponse.setWeight(getTagWeight(tags.getName()));
-                singleTagResponses.add(tagResponse);
-            });
-        return new TagsResponse(singleTagResponses);
     }
 
     public TagsResponse getTags(String query) {
@@ -46,15 +31,15 @@ public class TagService {
                 }
                 singleTagResponses.add(tagResponse);
             });
-        return new TagsResponse(singleTagResponses);
-    }
 
-    public Map<Integer, String> getPostsByTag(Tags tag) {
-        return tagRepository.findAll().stream().filter(tags -> tags.getName().equals(tag.getName()))
-                .collect(Collectors.toMap(Tags::getId, Tags::getName));
+        List<SingleTagResponse> responses = singleTagResponses.stream()
+                .sorted(Comparator.comparing(SingleTagResponse::getWeight).reversed())
+                .collect(Collectors.toList());
+
+        return new TagsResponse(responses);
     }
 
     private Double getTagWeight(String tagName) {
-        return (double) postRepository.getPostsCountWithTag(tagName) / postRepository.getPostsCount();
+        return (double) tagRepository.getPostsCountWithTag(tagName) / tagRepository.getPostsCount();
     }
 }

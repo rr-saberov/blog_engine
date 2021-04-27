@@ -30,11 +30,11 @@ public class Users {
 /*    @Pattern(regexp = "[^0-9\\p{all}]")*/
     private String name;
     @Column(nullable = false)
-    @Pattern(regexp = ".+\\@.+\\.(com|ru)")
+/*    @Pattern(regexp = ".+\\@.+\\.(com|ru)")*/
     private String email;
     @Column(nullable = false)
     @Size(min = 8, max = 25)
-/*    @Pattern(regexp = "[^а-яА-Я]")*/
+//    @Pattern(regexp = "[^а-яА-Я]")
     private String password;
     private String code;
     @Column(columnDefinition = "text")

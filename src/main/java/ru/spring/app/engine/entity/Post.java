@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -34,21 +35,14 @@ public class Post {
     private int viewCount;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "post_comments_id", referencedColumnName = "id")
-    private PostComments postComments;
-
-    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "moder_id", referencedColumnName = "id")
     private Users moderId;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "posts_votes_id", referencedColumnName = "id")
-    private PostVotes postVotes;
-
-    @OneToOne(mappedBy = "postsId")
-    private Tag2Post tag2Post;
 
     @ManyToOne
     @JoinColumn(name = "users_id")
     private Users usersId;
+
+    @OneToMany
+    @JoinColumn(name = "post_votes_id", referencedColumnName = "id")
+    private List<PostVotes> postVotes;
 }

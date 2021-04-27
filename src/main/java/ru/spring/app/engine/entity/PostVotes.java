@@ -31,7 +31,7 @@ public class PostVotes {
     @JoinColumn(name = "users_id")
     private Users usersId;
 
-    @OneToOne(mappedBy = "postVotes")
+    @ManyToOne
+    @JoinColumn(name = "posts_id")
     private Post postsId;
-
 }
