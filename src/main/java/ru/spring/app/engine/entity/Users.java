@@ -29,16 +29,20 @@ public class Users {
     @Size(min = 4, max = 15)
 /*    @Pattern(regexp = "[^0-9\\p{all}]")*/
     private String name;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "text")
 /*    @Pattern(regexp = ".+\\@.+\\.(com|ru)")*/
     private String email;
-    @Column(nullable = false)
-    @Size(min = 8, max = 25)
+    @Column(nullable = false, length = 255)
+/*    @Size(min = 8, max = 25)*/
 //    @Pattern(regexp = "[^а-яА-Я]")
     private String password;
     private String code;
     @Column(columnDefinition = "text")
     private String photo;
+
+    public Role getRole() {
+        return isModerator == 1 ? Role.MODERATOR : Role.USER;
+    }
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "postsComments", referencedColumnName = "id")

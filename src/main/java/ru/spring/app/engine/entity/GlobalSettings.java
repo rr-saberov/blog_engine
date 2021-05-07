@@ -2,13 +2,11 @@ package ru.spring.app.engine.entity;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
 @Entity
-@NoArgsConstructor
 @Table(name = "global_settings")
 @ApiModel(description = "data model of settings")
 public class GlobalSettings {

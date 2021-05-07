@@ -16,16 +16,35 @@
             <column name="name" value="tag name"/>
         </insert>
 
+        <insert tableName="post_comments">
+            <column name="id" value="2"/>
+            <column name="parent_id" value="1"/>
+            <column name="post_id" value="1"/>
+            <column name="text" value="text"/>
+            <column name="time" value="2005-11-2 20:00:00"/>
+            <column name="user_id" value="2"/>
+        </insert>
+
         <insert tableName="users">
-            <column name="id" value="1"/>
-            <column name="code" value="556677"/>
-            <column name="email" value="denis@gmail.com"/>
-            <column name="is_moderator" value="9"/>
-            <column name="name" value="Denis"/>
-            <column name="password" value="12345"/>
-            <column name="photo" value="https://yandex.ru/photoDenisa"/>
-            <column name="reg_time" value="2005-10-09 20:00:00"/>
+            <column name="code" value="test"/>
+            <column name="email" value="mail@mail.com"/>
+            <column name="is_moderator" value="-1"/>
+            <column name="name" value="Ruslan"/>
+            <column name="password" value="$2y$12$u/RM.92sSAfOTTRCQzPFnusgI1oZflsJjTQViVj1HDGiX.7Zgy2g6"/>
+            <column name="photo" value="test"/>
+            <column name="reg_time" value="2020-10-09 20:00:00"/>
             <column name="posts_comments" value="1"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="code" value="testcode"/>
+            <column name="email" value="gmail@gmail.com"/>
+            <column name="is_moderator" value="1"/>
+            <column name="name" value="Artem"/>
+            <column name="password" value="$2y$12$u/RM.92sSAfOTTRCQzPFnusgI1oZflsJjTQViVj1HDGiX.7Zgy2g6"/>
+            <column name="photo" value="test"/>
+            <column name="reg_time" value="2020-10-09 20:00:00"/>
+            <column name="posts_comments" value="2"/>
         </insert>
 
         <insert tableName="captcha_codes">

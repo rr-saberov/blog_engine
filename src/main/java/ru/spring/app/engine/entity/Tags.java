@@ -8,7 +8,6 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@NoArgsConstructor
 @Table(name = "tags")
 @ApiModel(description = "data model of tags")
 public class Tags {
