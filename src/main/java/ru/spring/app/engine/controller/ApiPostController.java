@@ -1,21 +1,21 @@
 package ru.spring.app.engine.controller;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import ru.spring.app.engine.api.response.PostsResponse;
 import ru.spring.app.engine.api.response.SinglePostResponse;
 import ru.spring.app.engine.service.PostService;
 
+import java.security.Principal;
 import java.util.Date;
 
-@Api
 @RestController
+@Api("post controller for rest api")
 @RequestMapping("/api/post")
 public class ApiPostController {
 
@@ -27,7 +27,9 @@ public class ApiPostController {
     }
 
     @GetMapping
-    private ResponseEntity<PostsResponse> getPosts(
+    @ApiOperation("method to get all posts")
+    @PreAuthorize("hasAuthority('user:write')")
+    public ResponseEntity<PostsResponse> getPosts(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "10") Integer limit,
             @RequestParam(defaultValue = "recent") String mode) {
@@ -35,7 +37,9 @@ public class ApiPostController {
     }
 
     @GetMapping("/search")
-    private ResponseEntity<PostsResponse> searchPosts(
+    @ApiOperation("method to search posts")
+    @PreAuthorize("hasAuthority('user:write')")
+    public ResponseEntity<PostsResponse> searchPosts(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "10") Integer limit,
             @RequestParam(defaultValue = "test") String query) {
@@ -43,7 +47,9 @@ public class ApiPostController {
     }
 
     @GetMapping("/byDate")
-    private ResponseEntity<PostsResponse> getPostsByDate(
+    @ApiOperation("method to get posts by date")
+    @PreAuthorize("hasAuthority('user:write')")
+    public ResponseEntity<PostsResponse> getPostsByDate(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "5") Integer limit,
             @RequestParam(defaultValue = "2005-10-9")
@@ -52,7 +58,9 @@ public class ApiPostController {
     }
 
     @GetMapping("/byTag")
-    private ResponseEntity<PostsResponse> getPostsByTag(
+    @ApiOperation("method to get posts by tag")
+    @PreAuthorize("hasAuthority('user:write')")
+    public ResponseEntity<PostsResponse> getPostsByTag(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "10") Integer limit,
             @RequestParam(defaultValue = "tag name") String tag) {
@@ -60,7 +68,26 @@ public class ApiPostController {
     }
 
     @GetMapping("/{ID}")
-    private ResponseEntity<SinglePostResponse> postById(@RequestParam(value = "ID", defaultValue = "1") Integer id) {
+    @ApiOperation("method to get post by id")
+    @PreAuthorize("hasAuthority('user:write')")
+    public ResponseEntity<SinglePostResponse> postById(@PathVariable(value = "ID") @RequestParam(value = "ID", defaultValue = "1") Integer id) {
         return ResponseEntity.ok(postService.getPostById(id));
+    }
+
+    @GetMapping("/moderation")
+    @PreAuthorize("hasAuthority('user:moderate')")
+    public ResponseEntity<PostsResponse> postsForModeration(@RequestParam(defaultValue = "0") Integer offset,
+                                                            @RequestParam(defaultValue = "10") Integer limit,
+                                                            @RequestParam(defaultValue = "NEW") String status) {
+        return ResponseEntity.ok(postService.getPostsForModeration(offset, limit, status));
+    }
+
+    @GetMapping("/my")
+    @PreAuthorize("hasAuthority('user:write')")
+    public ResponseEntity<PostsResponse> userPosts(@RequestParam(defaultValue = "0") Integer offset,
+                                                   @RequestParam(defaultValue = "10") Integer limit,
+                                                   @RequestParam(defaultValue = "published") String status,
+                                                   Principal principal) {
+        return ResponseEntity.ok(postService.getUserPosts(offset, limit, status, principal.getName()));
     }
 }

@@ -52,9 +52,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "SELECT * " +
             "FROM posts " +
             "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND time <= current_date " +
-            "AND text LIKE :query " +
+            "AND text LIKE %:query% " +
             "ORDER BY time DESC", nativeQuery = true)
-    Page<Post> getPostsByCustomRequest(@Param("query") String query, Pageable pageable);
+    Page<Post> searchInText(@Param("query") String query, Pageable pageable);
 
     @Query(value = "SELECT * FROM posts " +
             "JOIN tag2post ON posts.id = tag2post.posts_id " +
@@ -63,7 +63,55 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             "AND time <= current_date AND name = :tag", nativeQuery = true)
     Page<Post> getPostsWithTag(@Param("tag") String tag, Pageable nextPage);
 
-    //subsidiary method
+    @Query("SELECT p " +
+            "FROM Post p " +
+            "WHERE p.isActive = 1 AND p.moderationStatus = 'NEW' " +
+            "ORDER BY p.time DESC")
+    Page<Post> getNewPosts(Pageable pageable);
+
+    @Query("SELECT p " +
+            "FROM Post p " +
+            "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' " +
+            "ORDER BY p.time DESC")
+    Page<Post> getAcceptedPosts(Pageable pageable);
+
+    @Query("SELECT p " +
+            "FROM Post p " +
+            "WHERE p.isActive = 1 AND p.moderationStatus = 'DECLINED' " +
+            "ORDER BY p.time DESC")
+    Page<Post> getDeclinedPosts(Pageable pageable);
+
+    //methods to get user posts
+
+    @Query("SELECT p " +
+            "FROM Post p " +
+            "JOIN Users u " +
+            "WHERE p.isActive = 0 " +
+            "AND u.email = :email")
+    Page<Post> getInactivePostsByUser(Pageable pageable, @Param("email") String email);
+
+    @Query("SELECT p " +
+            "FROM Post p " +
+            "JOIN Users u " +
+            "WHERE p.isActive = 1 AND p.moderationStatus = 'NEW' " +
+            "AND u.email = :email")
+    Page<Post> getPendingPostsByUser(Pageable pageable, @Param("email") String email);
+
+    @Query("SELECT p " +
+            "FROM Post p " +
+            "JOIN Users u " +
+            "WHERE p.isActive = 1 AND p.moderationStatus = 'DECLINED' " +
+            "AND u.email = :email")
+    Page<Post> getDeclinedPostsByUser(Pageable pageable, @Param("email") String email);
+
+    @Query("SELECT p " +
+            "FROM Post p " +
+            "JOIN Users u " +
+            "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' " +
+            "AND u.email = :email")
+    Page<Post> getPublishedPostsByUser(Pageable pageable, @Param("email") String email);
+
+    //subsidiary methods
 
     @Query(value = "SELECT EXTRACT(YEAR from time) as year, COUNT(*) as amount_posts " +
             "FROM posts " +
@@ -83,6 +131,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Modifying
     @Query("UPDATE Post p set p.viewCount = :view_count WHERE p.id = :id")
     void updatePostInfo(@Param("view_count")Integer viewCount, @Param("id") Integer postId);
-
 }
 

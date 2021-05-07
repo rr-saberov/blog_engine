@@ -9,7 +9,6 @@ import java.util.Date;
 
 @Data
 @Entity
-@NoArgsConstructor
 @Table(name = "post_comments")
 @ApiModel(description = "data model of post comments")
 public class PostComments {

@@ -9,7 +9,6 @@ import java.util.Date;
 
 @Data
 @Entity
-@NoArgsConstructor
 @Table(name = "post_votes")
 @ApiModel(description = "data model of votes")
 public class PostVotes {

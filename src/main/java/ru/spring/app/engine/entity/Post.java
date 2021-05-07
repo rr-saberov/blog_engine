@@ -2,7 +2,6 @@ package ru.spring.app.engine.entity;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,7 +9,6 @@ import java.util.List;
 
 @Data
 @Entity
-@NoArgsConstructor
 @Table(name = "posts")
 @ApiModel(description = "data model of posts")
 public class Post {
@@ -45,4 +43,5 @@ public class Post {
     @OneToMany
     @JoinColumn(name = "post_votes_id", referencedColumnName = "id")
     private List<PostVotes> postVotes;
+
 }

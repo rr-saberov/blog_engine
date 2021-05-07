@@ -2,17 +2,15 @@ package ru.spring.app.engine.entity;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Data
 @Entity
-@NoArgsConstructor
 @Table(name = "captcha_codes")
 @ApiModel(description = "data model of captcha codes")
-public class CaptchaCodes {
+public class Captcha {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

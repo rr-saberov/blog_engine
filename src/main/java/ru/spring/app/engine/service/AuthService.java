@@ -1,38 +1,45 @@
 package ru.spring.app.engine.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ru.spring.app.engine.api.request.LoginRequest;
 import ru.spring.app.engine.api.response.AuthResponse;
+import ru.spring.app.engine.api.response.AuthUserResponse;
 import ru.spring.app.engine.api.response.RegistrationResponse;
 import ru.spring.app.engine.entity.Users;
 import ru.spring.app.engine.repository.UserRepository;
 
 import java.util.Date;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
 
     private UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthService(UserRepository userRepository) {
+    public AuthService(UserRepository userRepository, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
+        this.authenticationManager = authenticationManager;
     }
 
-/*    public AuthResponse authResponse(Users user) {
-        AuthResponse authResponse = new AuthResponse();
+    public AuthResponse login(LoginRequest loginRequest) {
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        User user = (User) auth.getPrincipal();
+        return convertToResponse(user.getUsername());
+    }
 
-        Map<String, String> usersMap = userRepository.findAll().stream()
-                .collect(Collectors.toMap(Users::getName, Users::getPassword));
-
-        authResponse.setResult
-                (usersMap.containsKey(user.getName()) && usersMap.containsValue(user.getPassword()));
-
-        return authResponse;
-    }*/
+    public AuthResponse check(String name) {
+        return convertToResponse(name);
+    }
 
     public RegistrationResponse newUserRegistration(String email, String password, String name,
                                     String captcha, String captchaSecret) {
@@ -45,42 +52,19 @@ public class AuthService {
         userRepository.save(user);
         return new RegistrationResponse(email, password, name, captcha, captchaSecret);
     }
-/*
 
-    public RegistrationResponse registrationResponse(Users user) {
-        return null;
-    }
-*/
-
-/*    public PostsResponse getPostsByTag(Integer page, Integer limit, String tag) {
-        Pageable nextPage = PageRequest.of(page, limit);
-        PostsResponse postsResponse = new PostsResponse();
-        Page<Post> postsPage =
-                postRepository.getPostsWithTag(tag, nextPage);
-        postsResponse.setCount(postsPage.getTotalElements());
-        postsResponse.setPosts(postsPage.get().map(this::convertToResponse).collect(Collectors.toList()));
-        return postsResponse;
-    }*/
-
-    private RegistrationResponse convertToResponse() {
-        return null;
+    private AuthResponse convertToResponse(String email) {
+        Users currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email));
+        AuthUserResponse userResponse = new AuthUserResponse();
+        userResponse.setEmail(currentUser.getEmail());
+        userResponse.setName(currentUser.getName());
+        userResponse.setModeration(currentUser.getIsModerator() == 1);
+        userResponse.setId(currentUser.getId());
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setResult(true);
+        authResponse.setAuthUserResponse(userResponse);
+        return authResponse ;
     }
 
-/*    private SinglePostResponse convertToResponse(Post post) {
-        SinglePostResponse postResponse = new SinglePostResponse();
-        UserResponse userResponse = new UserResponse();
-        Timestamp timestamp = new Timestamp(post.getTime().getTime());
-        userResponse.setId(post.getUserId());
-        userResponse.setName(post.getUsersId().getName());
-        postResponse.setId(post.getId());
-        postResponse.setTimestamp(timestamp.getTime());
-        postResponse.setTitle(post.getText());
-        postResponse.setAnnounce(post.getText());
-        postResponse.setLikeCount(post.getPostVotes().getValue());
-        postResponse.setDislikeCount(4);
-        postResponse.setCommentCount(5);
-        postResponse.setViewCount(post.getViewCount());
-        postResponse.setUserResponse(userResponse);
-        return postResponse;
-    }*/
 }
