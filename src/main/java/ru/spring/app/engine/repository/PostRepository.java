@@ -8,9 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.spring.app.engine.entity.Post;
+import ru.spring.app.engine.entity.PostComments;
+import ru.spring.app.engine.entity.Tags;
 
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -111,7 +114,18 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             "AND u.email = :email")
     Page<Post> getPublishedPostsByUser(Pageable pageable, @Param("email") String email);
 
+
     //subsidiary methods
+
+    @Query(value = "SELECT * FROM tags " +
+            "JOIN tag2post on tags.id = tag2post.tag_id " +
+            "WHERE post_id = :id", nativeQuery = true)
+    List<Tags> getTagsByPostId(@Param("id") Integer id);
+
+    @Query("SELECT pc " +
+            "FROM PostComments pc " +
+            "WHERE pc.postId = :id")
+    List<PostComments> getCommentsForPost(@Param("id") Integer id);
 
     @Query(value = "SELECT EXTRACT(YEAR from time) as year, COUNT(*) as amount_posts " +
             "FROM posts " +

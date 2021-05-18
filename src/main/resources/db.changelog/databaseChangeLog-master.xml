@@ -12,5 +12,4 @@
     <include file="db.changelog/ModStatusChangeSet.xml"/>
     <include file="db.changelog/testDataChangeSet.xml"/>
     <include file="db.changelog/tag2postChangeSet.xml"/>
-    <include file="db.changelog/userChangeSet.xml"/>
 </databaseChangeLog>

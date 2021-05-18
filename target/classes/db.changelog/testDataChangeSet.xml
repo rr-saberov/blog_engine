@@ -26,24 +26,24 @@
         </insert>
 
         <insert tableName="users">
-            <column name="code" value="test"/>
-            <column name="email" value="mail@mail.com"/>
-            <column name="is_moderator" value="-1"/>
-            <column name="name" value="Ruslan"/>
-            <column name="password" value="$2y$12$u/RM.92sSAfOTTRCQzPFnusgI1oZflsJjTQViVj1HDGiX.7Zgy2g6"/>
-            <column name="photo" value="test"/>
-            <column name="reg_time" value="2020-10-09 20:00:00"/>
+            <column name="code" value="dsadsa"/>
+            <column name="email" value="moderator@gmail.com"/>
+            <column name="is_moderator" value="1"/>
+            <column name="name" value="Maxim"/>
+            <column name="password" value="$2y$12$dqAZ.BhUp1RoMB26ddz/2umQpSGs0lXPSGT/tT9G1ebg4SYfcIDxu"/>
+            <column name="photo" value="fdsfsdfsd"/>
+            <column name="reg_time" value="2021-03-01 20:00:00"/>
             <column name="posts_comments" value="1"/>
         </insert>
 
         <insert tableName="users">
-            <column name="code" value="testcode"/>
-            <column name="email" value="gmail@gmail.com"/>
-            <column name="is_moderator" value="1"/>
-            <column name="name" value="Artem"/>
-            <column name="password" value="$2y$12$u/RM.92sSAfOTTRCQzPFnusgI1oZflsJjTQViVj1HDGiX.7Zgy2g6"/>
-            <column name="photo" value="test"/>
-            <column name="reg_time" value="2020-10-09 20:00:00"/>
+            <column name="code" value="dsd"/>
+            <column name="email" value="mail@gmail.com"/>
+            <column name="is_moderator" value="0"/>
+            <column name="name" value="Lada"/>
+            <column name="password" value="$2y$12$dqAZ.BhUp1RoMB26ddz/2umQpSGs0lXPSGT/tT9G1ebg4SYfcIDxu"/>
+            <column name="photo" value="test_photo"/>
+            <column name="reg_time" value="2021-02-01 20:00:00"/>
             <column name="posts_comments" value="2"/>
         </insert>
 

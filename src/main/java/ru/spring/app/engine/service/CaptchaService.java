@@ -31,6 +31,7 @@ public class CaptchaService {
         CaptchaResponse response = new CaptchaResponse();
         String token = cage.getTokenGenerator().next();
 
+
         byte[] fileContent = cage.draw(token);
         encodedString = "data:image/png;base64, " + Base64.getEncoder().encodeToString(fileContent);
 
@@ -39,7 +40,7 @@ public class CaptchaService {
 
         Captcha captcha = new Captcha();
         captcha.setCode(token);
-        captcha.setSecretCode(encodedString);
+        captcha.setSecretCode(token);
         captcha.setTime(new Date());
 
         captchaRepository.save(captcha);

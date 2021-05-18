@@ -32,9 +32,11 @@ public class Post {
     @Column(nullable = false)
     private int viewCount;
 
+/*
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "moder_id", referencedColumnName = "id")
     private Users moderId;
+*/
 
     @ManyToOne
     @JoinColumn(name = "users_id")
@@ -43,5 +45,6 @@ public class Post {
     @OneToMany
     @JoinColumn(name = "post_votes_id", referencedColumnName = "id")
     private List<PostVotes> postVotes;
+
 
 }

@@ -1,6 +1,7 @@
 package ru.spring.app.engine.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,7 +21,7 @@ import java.util.Date;
 @Service
 public class AuthService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
 
     @Autowired
@@ -66,5 +67,4 @@ public class AuthService {
         authResponse.setAuthUserResponse(userResponse);
         return authResponse ;
     }
-
 }
