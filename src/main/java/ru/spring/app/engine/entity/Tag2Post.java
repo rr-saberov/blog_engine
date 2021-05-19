@@ -24,4 +24,9 @@ public class Tag2Post {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tags_id", referencedColumnName = "id")
     private Tags tagsId;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "posts_id", referencedColumnName = "id")
+    private Post posts;
+
 }

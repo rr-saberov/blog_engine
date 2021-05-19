@@ -1,6 +1,7 @@
 package ru.spring.app.engine.controller;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ public class ApiTagController {
     }
 
     @GetMapping("/api/tag")
+    @ApiOperation("get tags by user response")
     public ResponseEntity<TagsResponse> tags(@RequestParam(defaultValue = "") String query) {
         return ResponseEntity.ok(tagService.getTags(query));
     }

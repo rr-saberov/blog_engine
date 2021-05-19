@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.request.LoginRequest;
 import ru.spring.app.engine.api.response.AuthResponse;
 import ru.spring.app.engine.api.response.AuthUserResponse;
-import ru.spring.app.engine.api.response.RegistrationResponse;
+import ru.spring.app.engine.api.request.RegistrationRequest;
 import ru.spring.app.engine.entity.Users;
 import ru.spring.app.engine.repository.UserRepository;
 
@@ -20,7 +20,7 @@ import java.util.Date;
 @Service
 public class AuthService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
 
     @Autowired
@@ -41,8 +41,8 @@ public class AuthService {
         return convertToResponse(name);
     }
 
-    public RegistrationResponse newUserRegistration(String email, String password, String name,
-                                    String captcha, String captchaSecret) {
+    public RegistrationRequest newUserRegistration(String email, String password, String name,
+                                                   String captcha, String captchaSecret) {
         Users user = new Users();
         user.setEmail(email);
         user.setIsModerator(-1);
@@ -50,7 +50,7 @@ public class AuthService {
         user.setName(name);
         user.setRegTime(new Date(System.currentTimeMillis()));
         userRepository.save(user);
-        return new RegistrationResponse(email, password, name, captcha, captchaSecret);
+        return new RegistrationRequest(email, password, name, captcha, captchaSecret);
     }
 
     private AuthResponse convertToResponse(String email) {
@@ -66,5 +66,4 @@ public class AuthService {
         authResponse.setAuthUserResponse(userResponse);
         return authResponse ;
     }
-
 }

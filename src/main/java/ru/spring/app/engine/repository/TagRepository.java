@@ -20,7 +20,6 @@ public interface TagRepository extends JpaRepository<Tags, Integer> {
             "ORDER BY (SELECT DISTINCT COUNT (*))", nativeQuery = true)
     List<Tags> getTagsOrderByPopularity();
 
-
     @Query(value = "SELECT COUNT (*) " +
             "FROM posts " +
             "JOIN tag2post ON posts.id = tag2post.posts_id " +

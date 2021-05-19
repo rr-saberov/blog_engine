@@ -5,23 +5,17 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import ru.spring.app.engine.api.request.LoginRequest;
 import ru.spring.app.engine.api.response.AuthResponse;
-import ru.spring.app.engine.api.response.AuthUserResponse;
 import ru.spring.app.engine.api.response.CaptchaResponse;
-import ru.spring.app.engine.api.response.RegistrationResponse;
-import ru.spring.app.engine.entity.Users;
-import ru.spring.app.engine.repository.UserRepository;
+import ru.spring.app.engine.api.request.RegistrationRequest;
 import ru.spring.app.engine.service.AuthService;
 import ru.spring.app.engine.service.CaptchaService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
 
 @Api
@@ -37,6 +31,11 @@ public class ApiAuthController {
     public ApiAuthController(AuthService authService, CaptchaService captchaService) {
         this.authService = authService;
         this.captchaService = captchaService;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(authService.login(loginRequest));
     }
 
     @GetMapping("/check")
@@ -55,22 +54,20 @@ public class ApiAuthController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<Boolean> logout() {
+    public ResponseEntity<Boolean> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        SecurityContextHolder.clearContext();
+        session.invalidate();
         return ResponseEntity.ok(true);
     }
 
     @PostMapping("/register")
     @ApiOperation("method to registration new user")
-    public ResponseEntity<RegistrationResponse> registration(@RequestParam(name = "e_mail", defaultValue = "rdfd@gmail.com") String email,
-                                             @RequestParam(defaultValue = "12345fdf") String password,
-                                             @RequestParam(defaultValue = "RuslanSab") String name,
-                                             @RequestParam(defaultValue = "dfasfSDADSA") String captcha,
-                                             @RequestParam(name = "captcha_secret", defaultValue = "45rt3") String captchaSecret) {
+    public ResponseEntity<RegistrationRequest> registration(@RequestParam(name = "e_mail", defaultValue = "rdfd@gmail.com") String email,
+                                                            @RequestParam(defaultValue = "12345fdf") String password,
+                                                            @RequestParam(defaultValue = "RuslanSab") String name,
+                                                            @RequestParam(defaultValue = "dfasfSDADSA") String captcha,
+                                                            @RequestParam(name = "captcha_secret", defaultValue = "45rt3") String captchaSecret) {
         return ResponseEntity.ok(authService.newUserRegistration(email, password, name, captcha, captchaSecret));
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok(authService.login(loginRequest));
     }
 }

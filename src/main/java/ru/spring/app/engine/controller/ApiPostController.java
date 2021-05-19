@@ -7,6 +7,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ru.spring.app.engine.api.request.PostRequest;
+import ru.spring.app.engine.api.response.AddPostResponse;
+import ru.spring.app.engine.api.response.CurrentPostResponse;
 import ru.spring.app.engine.api.response.PostsResponse;
 import ru.spring.app.engine.api.response.SinglePostResponse;
 import ru.spring.app.engine.service.PostService;
@@ -28,7 +31,6 @@ public class ApiPostController {
 
     @GetMapping
     @ApiOperation("method to get all posts")
-    @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<PostsResponse> getPosts(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "10") Integer limit,
@@ -37,8 +39,8 @@ public class ApiPostController {
     }
 
     @GetMapping("/search")
-    @ApiOperation("method to search posts")
     @PreAuthorize("hasAuthority('user:write')")
+    @ApiOperation("method to search posts")
     public ResponseEntity<PostsResponse> searchPosts(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "10") Integer limit,
@@ -47,8 +49,8 @@ public class ApiPostController {
     }
 
     @GetMapping("/byDate")
+    @PreAuthorize("hasAuthority('user:moderate')")
     @ApiOperation("method to get posts by date")
-    @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<PostsResponse> getPostsByDate(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "5") Integer limit,
@@ -59,7 +61,6 @@ public class ApiPostController {
 
     @GetMapping("/byTag")
     @ApiOperation("method to get posts by tag")
-    @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<PostsResponse> getPostsByTag(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "10") Integer limit,
@@ -69,8 +70,7 @@ public class ApiPostController {
 
     @GetMapping("/{ID}")
     @ApiOperation("method to get post by id")
-    @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<SinglePostResponse> postById(@PathVariable(value = "ID") @RequestParam(value = "ID", defaultValue = "1") Integer id) {
+    public ResponseEntity<CurrentPostResponse> postById(@PathVariable(value = "ID") Integer id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
@@ -89,5 +89,26 @@ public class ApiPostController {
                                                    @RequestParam(defaultValue = "published") String status,
                                                    Principal principal) {
         return ResponseEntity.ok(postService.getUserPosts(offset, limit, status, principal.getName()));
+    }
+
+    @PostMapping("/api/post")
+    @PreAuthorize("hasAuthority('user:write')")
+    public ResponseEntity<AddPostResponse> addPost(@RequestParam Long timestamp,
+                                                   @RequestParam Integer active,
+                                                   @RequestParam String title,
+                                                   @RequestParam String text,
+                                                   @RequestParam String tags) {
+        return ResponseEntity.ok(postService.addNewPost(timestamp, active, title, text, tags));
+    }
+
+    @PutMapping("/api/post/{ID}")
+    @PreAuthorize("hasAuthority('user:write')")
+    public ResponseEntity<Boolean> updatePost(@PathVariable("ID") Integer id,
+                                              @RequestParam Long timestamp,
+                                              @RequestParam Integer active,
+                                              @RequestParam String title,
+                                              @RequestParam String text,
+                                              @RequestParam String tags) {
+        return ResponseEntity.ok(postService.updatePost(id, timestamp, active, title, text, tags));
     }
 }

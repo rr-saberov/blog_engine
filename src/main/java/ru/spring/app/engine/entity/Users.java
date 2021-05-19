@@ -27,13 +27,13 @@ public class Users {
     private Date regTime;
     @Column(nullable = false)
     @Size(min = 4, max = 15)
-/*    @Pattern(regexp = "[^0-9\\p{all}]")*/
+//    @Pattern(regexp = "[^0-9\\p{all}]")
     private String name;
     @Column(nullable = false, columnDefinition = "text")
-/*    @Pattern(regexp = ".+\\@.+\\.(com|ru)")*/
+    @Pattern(regexp = ".+\\@.+\\.(com|ru)")
     private String email;
     @Column(nullable = false, length = 255)
-/*    @Size(min = 8, max = 25)*/
+    @Size(min = 8, max = 25)
 //    @Pattern(regexp = "[^а-яА-Я]")
     private String password;
     private String code;
@@ -44,9 +44,6 @@ public class Users {
         return isModerator == 1 ? Role.MODERATOR : Role.USER;
     }
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "postsComments", referencedColumnName = "id")
-    private PostComments postsComments;
 
     @OneToMany
     @JoinColumn(name = "user_posts", referencedColumnName = "id")
