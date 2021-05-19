@@ -2,6 +2,7 @@ package ru.spring.app.engine.service;
 
 import com.github.cage.Cage;
 import com.github.cage.GCage;
+import net.bytebuddy.utility.RandomString;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,41 +28,31 @@ public class CaptchaService {
     }
 
     public CaptchaResponse generateCaptcha() {
-        String encodedString;
+        restoreOldCaptcha();
         Cage cage = new GCage();
-        CaptchaResponse response = new CaptchaResponse();
         String token = cage.getTokenGenerator().next();
-
-
+        String secretCode = new RandomString(12).nextString();
+        captchaRepository.save(new Captcha(new Date(), token, secretCode));
         byte[] fileContent = cage.draw(token);
-        encodedString = "data:image/png;base64, " + Base64.getEncoder().encodeToString(fileContent);
-
-        response.setSecret(token);
-        response.setImage(encodedString);
-
-        Captcha captcha = new Captcha();
-        captcha.setCode(token);
-        captcha.setSecretCode(token);
-        captcha.setTime(new Date());
-
-        captchaRepository.save(captcha);
-
-/*        captchaRepository.findAll().forEach(cp -> {
-            if(cp.getTime().before(new Date()))
-                captchaRepository.delete(cp);
-        });*/
-
-        return response;
+        String encodedString = "data:image/png;base64, " + Base64.getEncoder().encodeToString(fileContent);
+        return new CaptchaResponse(secretCode, encodedString);
     }
 
-    public boolean validCaptcha(String code) throws IOException {
+    public boolean validCaptcha(String secretCode) throws IOException {
         generateCaptcha();
         Captcha captcha = captchaRepository.findAll().stream()
-                .filter(el -> el.getCode().equals(code)).collect(Collectors.toList()).get(0);
+                .filter(el -> el.getSecretCode().equals(secretCode)).collect(Collectors.toList()).get(0);
 
         byte[] decodedBytes = Base64.getDecoder().decode(captcha.getSecretCode());
         FileUtils.writeByteArrayToFile(new File("captcha"), decodedBytes);
 
-        return captcha.getCode().equals(code);
+        return captcha.getSecretCode().equals(secretCode);
+    }
+
+    private void restoreOldCaptcha() {
+        captchaRepository.findAll().forEach(cp -> {
+            if(cp.getTime().before(new Date(System.currentTimeMillis() - 3600 * 1000)))
+                captchaRepository.delete(cp);
+        });
     }
 }

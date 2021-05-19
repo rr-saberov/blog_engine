@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.spring.app.engine.api.request.PostRequest;
+import ru.spring.app.engine.api.response.AddPostResponse;
 import ru.spring.app.engine.api.response.CurrentPostResponse;
 import ru.spring.app.engine.api.response.PostsResponse;
 import ru.spring.app.engine.api.response.SinglePostResponse;
@@ -90,13 +91,13 @@ public class ApiPostController {
         return ResponseEntity.ok(postService.getUserPosts(offset, limit, status, principal.getName()));
     }
 
-    @PostMapping("/api/post")        //вопросы?
+    @PostMapping("/api/post")
     @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<Boolean> addPost(@RequestParam Long timestamp,
-                                           @RequestParam Integer active,
-                                           @RequestParam String title,
-                                           @RequestParam String text,
-                                           @RequestParam String tags) {
+    public ResponseEntity<AddPostResponse> addPost(@RequestParam Long timestamp,
+                                                   @RequestParam Integer active,
+                                                   @RequestParam String title,
+                                                   @RequestParam String text,
+                                                   @RequestParam String tags) {
         return ResponseEntity.ok(postService.addNewPost(timestamp, active, title, text, tags));
     }
 

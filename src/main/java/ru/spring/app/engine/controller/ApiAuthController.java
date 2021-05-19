@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.spring.app.engine.api.request.LoginRequest;
 import ru.spring.app.engine.api.response.AuthResponse;
 import ru.spring.app.engine.api.response.CaptchaResponse;
-import ru.spring.app.engine.api.response.RegistrationResponse;
+import ru.spring.app.engine.api.request.RegistrationRequest;
 import ru.spring.app.engine.service.AuthService;
 import ru.spring.app.engine.service.CaptchaService;
 
@@ -63,11 +63,11 @@ public class ApiAuthController {
 
     @PostMapping("/register")
     @ApiOperation("method to registration new user")
-    public ResponseEntity<RegistrationResponse> registration(@RequestParam(name = "e_mail", defaultValue = "rdfd@gmail.com") String email,
-                                             @RequestParam(defaultValue = "12345fdf") String password,
-                                             @RequestParam(defaultValue = "RuslanSab") String name,
-                                             @RequestParam(defaultValue = "dfasfSDADSA") String captcha,
-                                             @RequestParam(name = "captcha_secret", defaultValue = "45rt3") String captchaSecret) {
-        return ResponseEntity.ok(authService.   newUserRegistration(email, password, name, captcha, captchaSecret));
+    public ResponseEntity<RegistrationRequest> registration(@RequestParam(name = "e_mail", defaultValue = "rdfd@gmail.com") String email,
+                                                            @RequestParam(defaultValue = "12345fdf") String password,
+                                                            @RequestParam(defaultValue = "RuslanSab") String name,
+                                                            @RequestParam(defaultValue = "dfasfSDADSA") String captcha,
+                                                            @RequestParam(name = "captcha_secret", defaultValue = "45rt3") String captchaSecret) {
+        return ResponseEntity.ok(authService.newUserRegistration(email, password, name, captcha, captchaSecret));
     }
 }

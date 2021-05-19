@@ -118,20 +118,19 @@ public class PostService {
         return convertPostToCurrentPostResponse(postRepository.getPostsById(id));
     }
 
-    public Boolean addNewPost(Long timestamp, Integer active, String title, String text, String tags) {
+    public AddPostResponse addNewPost(Long timestamp, Integer active, String title, String text, String tags) {
         Post post = new Post();
-
+        post.setIsActive(active);
+        post.setText(text);
+        post.setModerationStatus(ModerationStatus.NEW);
         if (new Date(timestamp).after(new Date())) {
             post.setTime(new Date(timestamp));
         } else {
             post.setTime(new Date());
         }
 
-        post.setIsActive(active);
-        post.setText(text);
-        post.setModerationStatus(ModerationStatus.NEW);
 
-        return false;
+        return new AddPostResponse();
     }
 
     public Boolean updatePost(Integer id, Long timestamp, Integer active, String title, String text, String tags) {

@@ -27,8 +27,7 @@ public class PostComments {
     @Column(nullable = false, columnDefinition = "text")
     private String text;
 
-    @OneToOne(mappedBy = "postsComments")
-    private Users usersId;
+
 }
 
 

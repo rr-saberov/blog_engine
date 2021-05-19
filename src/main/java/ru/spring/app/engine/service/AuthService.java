@@ -1,7 +1,6 @@
 package ru.spring.app.engine.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.request.LoginRequest;
 import ru.spring.app.engine.api.response.AuthResponse;
 import ru.spring.app.engine.api.response.AuthUserResponse;
-import ru.spring.app.engine.api.response.RegistrationResponse;
+import ru.spring.app.engine.api.request.RegistrationRequest;
 import ru.spring.app.engine.entity.Users;
 import ru.spring.app.engine.repository.UserRepository;
 
@@ -42,8 +41,8 @@ public class AuthService {
         return convertToResponse(name);
     }
 
-    public RegistrationResponse newUserRegistration(String email, String password, String name,
-                                    String captcha, String captchaSecret) {
+    public RegistrationRequest newUserRegistration(String email, String password, String name,
+                                                   String captcha, String captchaSecret) {
         Users user = new Users();
         user.setEmail(email);
         user.setIsModerator(-1);
@@ -51,7 +50,7 @@ public class AuthService {
         user.setName(name);
         user.setRegTime(new Date(System.currentTimeMillis()));
         userRepository.save(user);
-        return new RegistrationResponse(email, password, name, captcha, captchaSecret);
+        return new RegistrationRequest(email, password, name, captcha, captchaSecret);
     }
 
     private AuthResponse convertToResponse(String email) {

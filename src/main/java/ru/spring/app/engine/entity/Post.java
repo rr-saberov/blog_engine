@@ -32,15 +32,12 @@ public class Post {
     @Column(nullable = false)
     private int viewCount;
 
-/*
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "moder_id", referencedColumnName = "id")
-    private Users moderId;
-*/
-
     @ManyToOne
     @JoinColumn(name = "users_id")
     private Users usersId;
+
+    @OneToOne(mappedBy = "posts")
+    private Tag2Post tag2Post;
 
     @OneToMany
     @JoinColumn(name = "post_votes_id", referencedColumnName = "id")
