@@ -1,12 +1,35 @@
 package ru.spring.app.engine.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ru.spring.app.engine.entity.Users;
+import ru.spring.app.engine.entity.User;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<Users, Integer> {
-    Optional<Users> findByEmail(String email);
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findByEmail(String email);
+
+    User getUsersById(Long id);
+
+    @Query("SELECT u.id " +
+            "FROM User u " +
+            "WHERE u.email = :email")
+    Long getUserIdByEmail(@Param("email") String email);
+
+    @Modifying
+    @Query("UPDATE User u SET u.email = :email WHERE u.id = :id")
+    void updateUserEmail(@Param("email") String email, @Param("id") Long id);
+
+    @Modifying
+    @Query("UPDATE User u SET u.name = :name WHERE u.id = :id")
+    void updateUserName(@Param("name") String name, @Param("id") Long id);
+
+    @Modifying
+    @Query("UPDATE User u SET u.password = :password WHERE u.id = :id")
+    void updateUserPassword(@Param("password") String password, @Param("id") Long id);
 }

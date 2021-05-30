@@ -1,31 +1,35 @@
 package ru.spring.app.engine.service;
 
-import liquibase.pro.packaged.D;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.spring.app.engine.api.request.PostRequest;
 import ru.spring.app.engine.api.response.*;
-import ru.spring.app.engine.entity.ModerationStatus;
+import ru.spring.app.engine.entity.User;
+import ru.spring.app.engine.entity.enums.ModerationStatus;
 import ru.spring.app.engine.entity.Post;
-import ru.spring.app.engine.entity.Tags;
+import ru.spring.app.engine.entity.Tag;
+import ru.spring.app.engine.exceptions.AccessIsDeniedException;
 import ru.spring.app.engine.repository.PostRepository;
+import ru.spring.app.engine.repository.PostVotesRepository;
+import ru.spring.app.engine.repository.UserRepository;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final PostVotesRepository postVotesRepository;
 
-    @Autowired
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, PostVotesRepository postVotesRepository) {
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
+        this.postVotesRepository = postVotesRepository;
     }
 
     public PostsResponse getPosts(Integer offset, Integer limit, String mode) {
@@ -105,7 +109,7 @@ public class PostService {
 
     public CalendarResponse getPostsCountInTheYear(Integer year) {
         CalendarResponse calendarResponse;
-        if (year == 0) {
+        if (year == null) {
             calendarResponse = convertMapToResponse();
         } else {
             calendarResponse = convertMapToResponse(year);
@@ -113,28 +117,65 @@ public class PostService {
         return calendarResponse;
     }
 
-    public CurrentPostResponse getPostById(Integer id) {
+    public CurrentPostResponse getPostById(Long id) {
         postRepository.updatePostInfo(postRepository.getPostsById(id).getViewCount() + 1, id);
         return convertPostToCurrentPostResponse(postRepository.getPostsById(id));
     }
 
-    public AddPostResponse addNewPost(Long timestamp, Integer active, String title, String text, String tags) {
-        Post post = new Post();
-        post.setIsActive(active);
-        post.setText(text);
-        post.setModerationStatus(ModerationStatus.NEW);
-        if (new Date(timestamp).after(new Date())) {
-            post.setTime(new Date(timestamp));
-        } else {
-            post.setTime(new Date());
-        }
-
-
-        return new AddPostResponse();
+    public AddPostResponse addNewPost(PostRequest request) {
+        savePostFromRequest(request);
+        AddPostResponse response = new AddPostResponse();
+        return response;
     }
 
-    public Boolean updatePost(Integer id, Long timestamp, Integer active, String title, String text, String tags) {
-        return false;
+    public AddPostResponse updatePost(Long id, PostRequest request) {
+        savePostFromRequest(request, id);
+        AddPostResponse response = new AddPostResponse();
+        return response;
+    }
+
+    public StatisticsResponse getStatistics(String email) throws AccessIsDeniedException {
+        StatisticsResponse response = new StatisticsResponse();
+        if (userRepository.findByEmail(email).get().getIsModerator() == 1) {
+            response.setPostsCount(postRepository.findAll().size());
+            response.setViewCount(postRepository.getTotalViewCount());
+            response.setLikesCount(postRepository.getTotalLikesCount());
+            response.setDislikesCount(postRepository.getTotalDislikesCount());
+            response.setFirstPublication(postRepository.getPostsOrderByTime().get(0).getTime().getTime());
+            return response;
+        } else {
+            throw new AccessIsDeniedException("");
+        }
+    }
+
+    public Boolean addLike(Long postId, String email) {
+        User currentUser = userRepository.findByEmail(email).get();
+        if (postVotesRepository.findByUserId(currentUser.getId()).getValue() == - 1) {
+            postVotesRepository.changeDislikeToLike(currentUser.getId());
+            return true;
+        }
+        else if (postVotesRepository.findByUserId(currentUser.getId()).getValue() == 1) {
+            return false;
+        }
+        else {
+            postVotesRepository.addLike(postId, new Date(System.currentTimeMillis()), currentUser.getId());
+            return true;
+        }
+    }
+
+    public Boolean addDislike(Long postId, String email) {
+        User currentUser = userRepository.findByEmail(email).get();
+        if (postVotesRepository.findByUserId(currentUser.getId()).getValue() == - 1) {
+            return false;
+        }
+        else if (postVotesRepository.findByUserId(currentUser.getId()).getValue() == 1) {
+            postVotesRepository.changeLikeToDislike(currentUser.getId());
+            return true;
+        }
+        else {
+            postVotesRepository.addDislike(postId, new Date(System.currentTimeMillis()), currentUser.getId());
+            return true;
+        }
     }
 
     //methods to convert posts
@@ -151,45 +192,53 @@ public class PostService {
         UserResponse userResponse = new UserResponse();
         Timestamp timestamp = new Timestamp(post.getTime().getTime());
         userResponse.setId(post.getUserId());
-        userResponse.setName(post.getUsersId().getName());
+        userResponse.setName(postRepository.getNameFromPost(post.getUserId()));
         postResponse.setId(post.getId());
         postResponse.setTimestamp(timestamp.getTime() / 1_000);
         postResponse.setTitle(post.getText());
-        postResponse.setAnnounce(post.getText());
-        postResponse.setLikeCount(post.getPostVotes().stream().filter(vote -> vote.getValue() == 1).count());
-        postResponse.setDislikeCount(post.getPostVotes().stream().filter(vote -> vote.getValue() == - 1).count());
+        postResponse.setAnnounce(post.getText().substring(Math.min(0, 25)));
+        postResponse.setLikeCount(postRepository.getVotesForPost(post.getId())
+                .stream().filter(vote -> vote.getValue() == 1).count());
+        postResponse.setDislikeCount(postRepository.getVotesForPost(post.getId())
+                .stream().filter(vote -> vote.getValue() == - 1).count());
         postResponse.setCommentCount(5);
         postResponse.setViewCount(post.getViewCount());
         postResponse.setUserResponse(userResponse);
         return postResponse;
     }
 
-    private CurrentPostResponse convertPostToCurrentPostResponse(Post post) {   //комментарии
+    private CurrentPostResponse convertPostToCurrentPostResponse(Post post) {
         CurrentPostResponse postResponse = new CurrentPostResponse();
         CommentUserResponse userResponse = new CommentUserResponse();
+        String[] tags = new String[post.getTags().size()];
+        List<String> tagNameList = post.getTags().stream().map(Tag::getName).collect(Collectors.toList());
+        tags = tagNameList.toArray(tags);
         userResponse.setId(post.getUserId());
-        userResponse.setName(post.getUsersId().getName());
+        userResponse.setName(postRepository.getNameFromPost(post.getUserId()));
         postResponse.setId(post.getId());
         postResponse.setTimestamp(new Timestamp(post.getTime().getTime()).getTime() / 1_000);
         postResponse.setTitle(post.getText());
-        postResponse.setLikeCount(post.getPostVotes().stream().filter(vote -> vote.getValue() == 1).count());
-        postResponse.setDislikeCount(post.getPostVotes().stream().filter(vote -> vote.getValue() == - 1).count());
+        postResponse.setLikeCount(postRepository.getVotesForPost(post.getId())
+                .stream().filter(vote -> vote.getValue() == 1).count());
+        postResponse.setDislikeCount(postRepository.getVotesForPost(post.getId())
+                .stream().filter(vote -> vote.getValue() == - 1).count());
         postResponse.setViewCount(post.getViewCount());
         postResponse.setUserResponse(userResponse);
         postResponse.setActive(post.getIsActive() == 1);
-        postResponse.setTags((String[]) postRepository.getTagsByPostId(post.getId())
-                .stream().map(Tags::getName).map(String::new).toArray());
+        postResponse.setTags(tags);
         postResponse.setComments(convertPostCommentsToResponse(post.getId()));
         return postResponse;
     }
 
-    private List<CommentResponse> convertPostCommentsToResponse(Integer postId) {
+    private List<CommentResponse> convertPostCommentsToResponse(Long postId) {
         List<CommentResponse> responses = new ArrayList<>();
         postRepository.getCommentsForPost(postId).forEach(postComments -> {
+            User currentUser = userRepository.getUsersById(postComments.getUserId());
             CommentResponse commentResponse = new CommentResponse();
             commentResponse.setId(postComments.getId());
             commentResponse.setText(postComments.getText());
             commentResponse.setTimestamp(postComments.getTime().getTime());
+            commentResponse.setUser(new UserResponse(currentUser.getId(), currentUser.getName(), currentUser.getPhoto()));
             responses.add(commentResponse);
         });
         return responses;
@@ -215,5 +264,29 @@ public class PostService {
         });
         calendarResponse.setPosts(postInDayResponses);
         return calendarResponse;
+    }
+
+    private void savePostFromRequest(PostRequest request) {
+        Post post = new Post();
+        convertPostRequestToPost(request, post);
+    }
+
+    private void savePostFromRequest(PostRequest request, Long id) {
+        Post post = new Post();
+        post.setId(id);
+        convertPostRequestToPost(request, post);
+    }
+
+    private void convertPostRequestToPost(PostRequest request, Post post) {
+        post.setIsActive(request.getIsActive());
+        post.setText(request.getText());
+        post.setTags(request.getTags());
+        post.setModerationStatus(ModerationStatus.NEW);
+        if (new Date(request.getTimestamp()).after(new Date())) {
+            post.setTime(new Date(request.getTimestamp()));
+        } else {
+            post.setTime(new Date());
+        }
+        postRepository.save(post);
     }
 }

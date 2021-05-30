@@ -5,7 +5,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.spring.app.engine.entity.Users;
 
 import java.util.Collection;
 import java.util.List;
@@ -52,7 +51,7 @@ public class SecurityUser implements UserDetails {
         return true;
     }
 
-    public static UserDetails fromUser(Users user) {
+    public static UserDetails fromUser(ru.spring.app.engine.entity.User user) {
         return new User(
                 user.getEmail(),
                 user.getPassword(),

@@ -16,7 +16,6 @@ public class ApiTagController {
 
     private final TagService tagService;
 
-    @Autowired
     public ApiTagController(TagService tagService) {
         this.tagService = tagService;
     }

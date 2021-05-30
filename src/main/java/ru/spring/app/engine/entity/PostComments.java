@@ -16,14 +16,19 @@ public class PostComments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "serial")
-    private int id;
-    private int parentId;
+    private long id;
+
+    private long parentId;
+
     @Column(nullable = false)
-    private int postId;
+    private long postId;
+
     @Column(nullable = false)
-    private int userId;
+    private long userId;
+
     @Column(nullable = false)
     private Date time;
+
     @Column(nullable = false, columnDefinition = "text")
     private String text;
 

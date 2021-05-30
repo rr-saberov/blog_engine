@@ -1,4 +1,4 @@
-package ru.spring.app.engine.entity;
+package ru.spring.app.engine.entity.enums;
 
 public enum ModerationStatus {
     NEW,

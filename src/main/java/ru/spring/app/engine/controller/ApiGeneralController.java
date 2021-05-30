@@ -1,17 +1,19 @@
 package ru.spring.app.engine.controller;
 
 import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import ru.spring.app.engine.api.response.CalendarResponse;
-import ru.spring.app.engine.api.response.InitResponse;
-import ru.spring.app.engine.api.response.SettingsResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import ru.spring.app.engine.api.request.EditProfileRequest;
+import ru.spring.app.engine.api.response.*;
+import ru.spring.app.engine.service.ImageStorage;
 import ru.spring.app.engine.service.PostService;
 import ru.spring.app.engine.service.SettingsService;
+import ru.spring.app.engine.service.UserService;
+
+import java.io.IOException;
+import java.security.Principal;
 
 @Api
 @RestController
@@ -21,13 +23,16 @@ public class ApiGeneralController {
     private final SettingsService settingsService;
     private final PostService postService;
     private final InitResponse initResponse;
+    private final ImageStorage storage;
+    private final UserService userService;
 
-    @Autowired
-    public ApiGeneralController(SettingsService settingsService,
-                                PostService postService, InitResponse initResponse) {
+    public ApiGeneralController(SettingsService settingsService, PostService postService,
+                                InitResponse initResponse, ImageStorage storage, UserService userService) {
         this.settingsService = settingsService;
         this.postService = postService;
         this.initResponse = initResponse;
+        this.storage = storage;
+        this.userService = userService;
     }
 
     @GetMapping("/init")
@@ -41,7 +46,29 @@ public class ApiGeneralController {
     }
 
     @GetMapping("/calendar")
-    public ResponseEntity<CalendarResponse> getPostCountInYear(@RequestParam(defaultValue = "2021") Integer year) {
+    public ResponseEntity<CalendarResponse> getPostCountInYear(@RequestParam(defaultValue = "") Integer year) {
         return ResponseEntity.ok(postService.getPostsCountInTheYear(year));
+    }
+
+    @PostMapping("/image")
+    @PreAuthorize("hasAuthority('user:write')")
+    public String saveImage(@RequestParam MultipartFile file) throws IOException {
+        String savePath = storage.saveNewImage(file);
+        return (savePath);
+    }
+
+    @PostMapping("/profile/my")
+    @PreAuthorize("hasAuthority('user:write')")
+    public ResponseEntity<EditProfileResponse> editProfile(@RequestBody EditProfileRequest request, Principal principal) {
+        return ResponseEntity.ok(userService.updateProfile(request, principal));
+    }
+
+    @GetMapping("/statistics/all")
+    public ResponseEntity<StatisticsResponse> getStatistics(Principal principal) throws Exception {
+        if (settingsService.getGlobalSettings().isStatisticsIsPublic()) {
+            return ResponseEntity.ok(postService.getStatistics(principal.getName()));
+        } else {
+            throw new Exception();
+        }
     }
 }

@@ -14,7 +14,6 @@ public class SettingsService {
 
     private GlobalSettingsRepository settingsRepository;
 
-    @Autowired
     public SettingsService(GlobalSettingsRepository settingsRepository) {
         this.settingsRepository = settingsRepository;
     }
