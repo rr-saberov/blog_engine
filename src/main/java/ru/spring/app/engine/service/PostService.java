@@ -13,22 +13,26 @@ import ru.spring.app.engine.entity.Tag;
 import ru.spring.app.engine.exceptions.AccessIsDeniedException;
 import ru.spring.app.engine.repository.PostRepository;
 import ru.spring.app.engine.repository.PostVotesRepository;
+import ru.spring.app.engine.repository.TagRepository;
 import ru.spring.app.engine.repository.UserRepository;
 
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final TagRepository tagRepository;
     private final PostVotesRepository postVotesRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository, PostVotesRepository postVotesRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, TagRepository tagRepository, PostVotesRepository postVotesRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.tagRepository = tagRepository;
         this.postVotesRepository = postVotesRepository;
     }
 
@@ -178,6 +182,18 @@ public class PostService {
         }
     }
 
+    public Boolean moderatePost(Long id, String decision) {
+        if (decision.equals("accept")) {
+            postRepository.updatePostStatus("ACCEPTED", id);
+            return true;
+        } else if (decision.equals("decline")) {
+            postRepository.updatePostStatus("DECLINED", id);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     //methods to convert posts
 
     private PostsResponse convertPagePostsToResponse(Page<Post> posts) {
@@ -278,9 +294,14 @@ public class PostService {
     }
 
     private void convertPostRequestToPost(PostRequest request, Post post) {
+        List<Tag> tags = new ArrayList<>();
+        Arrays.stream(request.getTags()).forEach((tag) -> {
+            Tag currentTag = tagRepository.getTagByName(tag);
+            tags.add(currentTag);
+        });
         post.setIsActive(request.getIsActive());
         post.setText(request.getText());
-        post.setTags(request.getTags());
+        post.setTags(tags);
         post.setModerationStatus(ModerationStatus.NEW);
         if (new Date(request.getTimestamp()).after(new Date())) {
             post.setTime(new Date(request.getTimestamp()));

@@ -52,7 +52,7 @@ public class ApiGeneralController {
 
     @PostMapping("/image")
     @PreAuthorize("hasAuthority('user:write')")
-    public String saveImage(@RequestParam MultipartFile file) throws IOException {
+    public String saveImage(@RequestBody MultipartFile file) throws IOException {
         String savePath = storage.saveNewImage(file);
         return (savePath);
     }
@@ -64,6 +64,7 @@ public class ApiGeneralController {
     }
 
     @GetMapping("/statistics/all")
+    @PreAuthorize("hasAuthority('user:moderate')")
     public ResponseEntity<StatisticsResponse> getStatistics(Principal principal) throws Exception {
         if (settingsService.getGlobalSettings().isStatisticsIsPublic()) {
             return ResponseEntity.ok(postService.getStatistics(principal.getName()));

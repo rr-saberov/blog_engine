@@ -3,7 +3,7 @@ spring:
     driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/engine_test?&useSSL=false&serverTimezone=UTC
     username: postgres
-    password: newuserR-1
+    password: postgres
     initialization-mode: always
   liquibase:
     change-log: classpath:db.changelog/databaseChangeLog-master.xml

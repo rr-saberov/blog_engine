@@ -38,7 +38,6 @@ public class ApiPostController {
     }
 
     @GetMapping("/post/search")
-    @PreAuthorize("hasAuthority('user:write')")
     @ApiOperation("method to search posts")
     public ResponseEntity<PostsResponse> searchPosts(
             @RequestParam(defaultValue = "0") Integer offset,
@@ -48,7 +47,6 @@ public class ApiPostController {
     }
 
     @GetMapping("/post/byDate")
-    @PreAuthorize("hasAuthority('user:moderate')")
     @ApiOperation("method to get posts by date")
     public ResponseEntity<PostsResponse> getPostsByDate(
             @RequestParam(defaultValue = "0") Integer offset,
@@ -88,6 +86,13 @@ public class ApiPostController {
                                                    @RequestParam(defaultValue = "published") String status,
                                                    Principal principal) {
         return ResponseEntity.ok(postService.getUserPosts(offset, limit, status, principal.getName()));
+    }
+
+    @PostMapping("/moderation")
+    public ResponseEntity<Boolean> moderatePost(@RequestParam Long id,
+                                                @RequestParam String decision) {
+        Boolean result = postService.moderatePost(id, decision);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/post")

@@ -13,6 +13,7 @@ import ru.spring.app.engine.api.response.AuthResponse;
 import ru.spring.app.engine.api.response.AuthUserResponse;
 import ru.spring.app.engine.api.request.RegistrationRequest;
 import ru.spring.app.engine.api.response.ChangePasswordResponse;
+import ru.spring.app.engine.api.response.RegistrationResponse;
 import ru.spring.app.engine.entity.Captcha;
 import ru.spring.app.engine.exceptions.CaptchaNotFoundException;
 import ru.spring.app.engine.exceptions.RegistrationFailedException;
@@ -47,17 +48,16 @@ public class AuthService {
         return convertToResponse(name);
     }
 
-    public RegistrationRequest registration(String email, String password, String name,
-                                            String captcha, String captchaSecret) throws RegistrationFailedException {
-        if (userRepository.findByEmail(email).isEmpty()) {
+    public RegistrationResponse registration(RegistrationRequest request) throws RegistrationFailedException {
+        if (userRepository.findByEmail(request.getEmail()).isEmpty()) {
             ru.spring.app.engine.entity.User user = new ru.spring.app.engine.entity.User();
-            user.setEmail(email);
+            user.setEmail(request.getEmail());
             user.setIsModerator(-1);
-            user.setPassword(password);
-            user.setName(name);
+            user.setPassword(request.getPassword());
+            user.setName(request.getName());
             user.setRegTime(new Date(System.currentTimeMillis()));
             userRepository.save(user);
-            return new RegistrationRequest(email, password, name, captcha, captchaSecret);
+            return new RegistrationResponse(true, new ArrayList<>());
         } else {
             throw new RegistrationFailedException("Registration failed check correctness of input");
         }
