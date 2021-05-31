@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class SinglePostResponse {
-    private int id;
+    private long id;
     private long timestamp;
     @JsonProperty("user")
     private UserResponse userResponse;

@@ -1,5 +1,6 @@
 package ru.spring.app.engine.repository;
 
+import org.hibernate.sql.Select;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.spring.app.engine.entity.Post;
 import ru.spring.app.engine.entity.PostComments;
-import ru.spring.app.engine.entity.Tags;
+import ru.spring.app.engine.entity.PostVotes;
 
 import javax.transaction.Transactional;
 import java.util.Date;
@@ -17,9 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Integer> {
+public interface PostRepository extends JpaRepository<Post, Long> {
 
-    Post getPostsById(Integer id);
+    Post getPostsById(@Param("id") Long id);
 
     //methods to get page post
 
@@ -60,8 +61,8 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Page<Post> searchInText(@Param("query") String query, Pageable pageable);
 
     @Query(value = "SELECT * FROM posts " +
-            "JOIN tag2post ON posts.id = tag2post.posts_id " +
-            "JOIN tags ON tags.id = tag2post.tags_id " +
+            "JOIN tag2post ON posts.id = tag2post.post_id " +
+            "JOIN tags ON tags.id = tag2post.tag_id " +
             "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' " +
             "AND time <= current_date AND name = :tag", nativeQuery = true)
     Page<Post> getPostsWithTag(@Param("tag") String tag, Pageable nextPage);
@@ -86,46 +87,43 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     //methods to get user posts
 
-    @Query("SELECT p " +
-            "FROM Post p " +
-            "JOIN Users u " +
-            "WHERE p.isActive = 0 " +
-            "AND u.email = :email")
+    @Query(value = "SELECT * FROM posts " +
+            "LEFT JOIN users on posts.user_id = users.id " +
+            "WHERE is_active = -1 and email = :email", nativeQuery = true)
     Page<Post> getInactivePostsByUser(Pageable pageable, @Param("email") String email);
 
-    @Query("SELECT p " +
-            "FROM Post p " +
-            "JOIN Users u " +
-            "WHERE p.isActive = 1 AND p.moderationStatus = 'NEW' " +
-            "AND u.email = :email")
+    @Query(value = "SELECT * FROM posts " +
+            "LEFT JOIN users on posts.user_id = users.id " +
+            "WHERE is_active = 1 AND moderation_status = 'NEW' AND email = :email", nativeQuery = true)
     Page<Post> getPendingPostsByUser(Pageable pageable, @Param("email") String email);
 
-    @Query("SELECT p " +
-            "FROM Post p " +
-            "JOIN Users u " +
-            "WHERE p.isActive = 1 AND p.moderationStatus = 'DECLINED' " +
-            "AND u.email = :email")
+    @Query(value = "SELECT * FROM posts\n" +
+            "LEFT JOIN users on posts.user_id = users.id " +
+            "WHERE is_active = 1 AND moderation_status = 'DECLINED' AND email = :email", nativeQuery = true)
     Page<Post> getDeclinedPostsByUser(Pageable pageable, @Param("email") String email);
 
-    @Query("SELECT p " +
-            "FROM Post p " +
-            "JOIN Users u " +
-            "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' " +
-            "AND u.email = :email")
+    @Query(value = "SELECT * FROM posts " +
+            "LEFT JOIN users on posts.user_id = users.id " +
+            "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND email = :email", nativeQuery = true)
     Page<Post> getPublishedPostsByUser(Pageable pageable, @Param("email") String email);
-
 
     //subsidiary methods
 
-    @Query(value = "SELECT * FROM tags " +
-            "JOIN tag2post on tags.id = tag2post.tag_id " +
-            "WHERE post_id = :id", nativeQuery = true)
-    List<Tags> getTagsByPostId(@Param("id") Integer id);
+    @Query("SELECT pv " +
+            "FROM PostVotes pv " +
+            "WHERE pv.postId = :id")
+    List<PostVotes> getVotesForPost(@Param("id") Long id);
+
+    @Query(value = "SELECT name " +
+            "FROM users " +
+            "LEFT JOIN posts on posts.user_id = users.id " +
+            "WHERE users.id = :id ", nativeQuery = true)
+    String getNameFromPost(@Param("id") Long id);
 
     @Query("SELECT pc " +
             "FROM PostComments pc " +
             "WHERE pc.postId = :id")
-    List<PostComments> getCommentsForPost(@Param("id") Integer id);
+    List<PostComments> getCommentsForPost(@Param("id") Long id);
 
     @Query(value = "SELECT EXTRACT(YEAR from time) as year, COUNT(*) as amount_posts " +
             "FROM posts " +
@@ -144,6 +142,29 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     @Transactional
     @Modifying
     @Query("UPDATE Post p set p.viewCount = :view_count WHERE p.id = :id")
-    void updatePostInfo(@Param("view_count")Integer viewCount, @Param("id") Integer postId);
+    void updatePostInfo(@Param("view_count")Integer viewCount, @Param("id") Long postId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Post p set p.moderationStatus = :moderation_status WHERE p.id = :id")
+    void updatePostStatus(@Param("moderation_status") String moderationStatus, @Param("id") Long postId);
+
+    @Query(value = "SELECT SUM (view_count) FROM posts", nativeQuery = true)
+    long getTotalViewCount();
+
+    @Query(value = "SELECT COUNT(id) " +
+            "FROM post_votes " +
+            "WHERE value = 1", nativeQuery = true)
+    long getTotalLikesCount();
+
+    @Query(value = "SELECT COUNT(id) " +
+            "FROM post_votes " +
+            "WHERE value = -1", nativeQuery = true)
+    long getTotalDislikesCount();
+
+    @Query("SELECT p " +
+            "FROM Post p " +
+            "ORDER BY p.time")
+    List<Post> getPostsOrderByTime();
 }
 

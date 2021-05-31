@@ -1,8 +1,9 @@
-package ru.spring.app.engine.entity;
+package ru.spring.app.engine.entity.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import ru.spring.app.engine.entity.enums.Permission;
 
 import java.util.Set;
 import java.util.stream.Collectors;

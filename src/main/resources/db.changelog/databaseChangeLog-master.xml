@@ -8,8 +8,7 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <include file="db.changelog/liquibase-outputChangeLog.xml"/>
-    <include file="db.changelog/globalSettingsChange.xml"/>
     <include file="db.changelog/ModStatusChangeSet.xml"/>
+    <include file="db.changelog/globalSettingsChange.xml"/>
     <include file="db.changelog/testDataChangeSet.xml"/>
-    <include file="db.changelog/tag2postChangeSet.xml"/>
 </databaseChangeLog>

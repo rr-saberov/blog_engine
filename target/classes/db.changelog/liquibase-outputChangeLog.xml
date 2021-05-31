@@ -1,90 +1,114 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <changeSet author="ruslan (generated)" id="1617528102996-1">
+    <changeSet author="ruslan (generated)" id="1622047252093-1">
         <createSequence sequenceName="captcha_codes_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-2">
+    <changeSet author="ruslan (generated)" id="1622047252093-2">
+        <createSequence sequenceName="captcha_codes_id_seq1"/>
+    </changeSet>
+    <changeSet author="ruslan (generated)" id="1622047252093-3">
         <createSequence sequenceName="global_settings_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-3">
+    <changeSet author="ruslan (generated)" id="1622047252093-4">
+        <createSequence sequenceName="global_settings_id_seq1"/>
+    </changeSet>
+    <changeSet author="ruslan (generated)" id="1622047252093-5">
         <createSequence sequenceName="post_comments_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-4">
+    <changeSet author="ruslan (generated)" id="1622047252093-6">
+        <createSequence sequenceName="post_comments_id_seq1"/>
+    </changeSet>
+    <changeSet author="ruslan (generated)" id="1622047252093-7">
         <createSequence sequenceName="post_votes_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-5">
+    <changeSet author="ruslan (generated)" id="1622047252093-8">
+        <createSequence sequenceName="post_votes_id_seq1"/>
+    </changeSet>
+    <changeSet author="ruslan (generated)" id="1622047252093-9">
         <createSequence sequenceName="post_votes_user_post_votes_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-6">
+    <changeSet author="ruslan (generated)" id="1622047252093-10">
         <createSequence sequenceName="post_votes_user_post_votes_id_seq1"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-7">
+    <changeSet author="ruslan (generated)" id="1622047252093-11">
         <createSequence sequenceName="post_votes_users_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-8">
+    <changeSet author="ruslan (generated)" id="1622047252093-12">
         <createSequence sequenceName="post_votes_users_id_seq1"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-9">
+    <changeSet author="ruslan (generated)" id="1622047252093-13">
         <createSequence sequenceName="posts_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-10">
+    <changeSet author="ruslan (generated)" id="1622047252093-14">
+        <createSequence sequenceName="posts_id_seq1"/>
+    </changeSet>
+    <changeSet author="ruslan (generated)" id="1622047252093-15">
         <createSequence sequenceName="posts_moder_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-11">
+    <changeSet author="ruslan (generated)" id="1622047252093-16">
         <createSequence sequenceName="posts_moder_id_seq1"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-12">
+    <changeSet author="ruslan (generated)" id="1622047252093-17">
         <createSequence sequenceName="posts_post_comments_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-13">
+    <changeSet author="ruslan (generated)" id="1622047252093-18">
         <createSequence sequenceName="posts_post_comments_id_seq1"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-14">
+    <changeSet author="ruslan (generated)" id="1622047252093-19">
         <createSequence sequenceName="posts_posts_votes_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-15">
+    <changeSet author="ruslan (generated)" id="1622047252093-20">
         <createSequence sequenceName="posts_posts_votes_id_seq1"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-16">
+    <changeSet author="ruslan (generated)" id="1622047252093-21">
         <createSequence sequenceName="posts_user_posts_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-17">
+    <changeSet author="ruslan (generated)" id="1622047252093-22">
         <createSequence sequenceName="posts_user_posts_seq1"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-18">
+    <changeSet author="ruslan (generated)" id="1622047252093-23">
         <createSequence sequenceName="posts_users_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-19">
+    <changeSet author="ruslan (generated)" id="1622047252093-24">
         <createSequence sequenceName="posts_users_id_seq1"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-20">
+    <changeSet author="ruslan (generated)" id="1622047252093-25">
         <createSequence sequenceName="tag2post_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-21">
+    <changeSet author="ruslan (generated)" id="1622047252093-26">
+        <createSequence sequenceName="tag2post_id_seq1"/>
+    </changeSet>
+    <changeSet author="ruslan (generated)" id="1622047252093-27">
         <createSequence sequenceName="tag2post_posts_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-22">
+    <changeSet author="ruslan (generated)" id="1622047252093-28">
         <createSequence sequenceName="tag2post_posts_id_seq1"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-23">
+    <changeSet author="ruslan (generated)" id="1622047252093-29">
         <createSequence sequenceName="tag2post_tags_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-24">
+    <changeSet author="ruslan (generated)" id="1622047252093-30">
         <createSequence sequenceName="tag2post_tags_id_seq1"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-25">
+    <changeSet author="ruslan (generated)" id="1622047252093-31">
         <createSequence sequenceName="tags_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-26">
+    <changeSet author="ruslan (generated)" id="1622047252093-32">
+        <createSequence sequenceName="tags_id_seq1"/>
+    </changeSet>
+    <changeSet author="ruslan (generated)" id="1622047252093-33">
         <createSequence sequenceName="users_id_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-27">
+    <changeSet author="ruslan (generated)" id="1622047252093-34">
+        <createSequence sequenceName="users_id_seq1"/>
+    </changeSet>
+    <changeSet author="ruslan (generated)" id="1622047252093-35">
         <createSequence sequenceName="users_posts_comments_seq"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-28">
+    <changeSet author="ruslan (generated)" id="1622047252093-36">
         <createSequence sequenceName="users_posts_comments_seq1"/>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-29">
+    <changeSet author="ruslan (generated)" id="1622047252093-37">
         <createTable tableName="captcha_codes">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="captcha_codes_pkey"/>
@@ -95,12 +119,12 @@
             <column name="secret_code" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="time" type="date">
+            <column name="time" type="DATE">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-30">
+    <changeSet author="ruslan (generated)" id="1622047252093-38">
         <createTable tableName="global_settings">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="global_settings_pkey"/>
@@ -116,116 +140,89 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-31">
+    <changeSet author="ruslan (generated)" id="1622047252093-39">
         <createTable tableName="post_comments">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="post_comments_pkey"/>
             </column>
-            <column name="parent_id" type="INT">
+            <column name="parent_id" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column name="post_id" type="INT">
+            <column name="post_id" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
             <column name="text" type="TEXT">
                 <constraints nullable="false"/>
             </column>
-            <column name="time" type="date">
+            <column name="time" type="DATE">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_id" type="INT">
+            <column name="user_id" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-32">
+    <changeSet author="ruslan (generated)" id="1622047252093-40">
         <createTable tableName="post_votes">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="post_votes_pkey"/>
             </column>
-            <column name="post_id" type="INT">
+            <column name="post_id" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column name="time" type="date">
+            <column name="time" type="DATE">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_id" type="INT">
+            <column name="user_id" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column name="value" type="INT">
-                <constraints nullable="false"/>
-            </column>
-            <column autoIncrement="true" name="users_id" type="SERIAL">
-                <constraints nullable="false"/>
-            </column>
-            <column autoIncrement="true" name="user_post_votes_id" type="SERIAL">
+            <column name="value" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-33">
+    <changeSet author="ruslan (generated)" id="1622047252093-41">
         <createTable tableName="posts">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="posts_pkey"/>
             </column>
-            <column name="is_active" type="INT">
+            <column name="is_active" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
             <column name="moderation_status" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="moderator_id" type="INT">
+            <column name="moderator_id" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
             <column name="text" type="TEXT">
                 <constraints nullable="false"/>
             </column>
-            <column name="time" type="date">
+            <column name="time" type="DATE">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_id" type="INT">
+            <column name="user_id" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column name="view_count" type="INT">
-                <constraints nullable="false"/>
-            </column>
-            <column autoIncrement="true" name="moder_id" type="SERIAL">
-                <constraints nullable="false"/>
-            </column>
-            <column autoIncrement="true" name="post_comments_id" type="SERIAL">
-                <constraints nullable="false"/>
-            </column>
-            <column autoIncrement="true" name="posts_votes_id" type="SERIAL">
-                <constraints nullable="false"/>
-            </column>
-            <column autoIncrement="true" name="users_id" type="SERIAL">
-                <constraints nullable="false"/>
-            </column>
-            <column autoIncrement="true" name="user_posts" type="SERIAL">
+            <column name="view_count" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-34">
+    <changeSet author="ruslan (generated)" id="1622047252093-42">
         <createTable tableName="tag2post">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="tag2post_pkey"/>
             </column>
-            <column name="post_id" type="INT">
+            <column name="post_id" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column name="tag_id" type="INT">
-                <constraints nullable="false"/>
-            </column>
-            <column autoIncrement="true" name="posts_id" type="SERIAL">
-                <constraints nullable="false"/>
-            </column>
-            <column autoIncrement="true" name="tags_id" type="SERIAL">
+            <column name="tag_id" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-35">
+    <changeSet author="ruslan (generated)" id="1622047252093-43">
         <createTable tableName="tags">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="tags_pkey"/>
@@ -235,61 +232,28 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-36">
+    <changeSet author="ruslan (generated)" id="1622047252093-44">
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="SERIAL">
                 <constraints primaryKey="true" primaryKeyName="users_pkey"/>
             </column>
             <column name="code" type="VARCHAR(255)"/>
-            <column name="email" type="VARCHAR(255)">
+            <column name="email" type="TEXT">
                 <constraints nullable="false"/>
             </column>
-            <column name="is_moderator" type="INT">
+            <column name="is_moderator" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column name="name" type="VARCHAR(15)">
+            <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="password" type="VARCHAR(255)">
+            <column name="password" type="TEXT">
                 <constraints nullable="false"/>
             </column>
             <column name="photo" type="TEXT"/>
-            <column name="reg_time" type="date">
-                <constraints nullable="false"/>
-            </column>
-            <column autoIncrement="true" name="posts_comments" type="SERIAL">
+            <column name="reg_time" type="DATE">
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-37">
-        <addForeignKeyConstraint baseColumnNames="posts_votes_id" baseTableName="posts" constraintName="fk2eknf9qhqd93t3kbpp4tj8jpl" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="post_votes"/>
-    </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-38">
-        <addForeignKeyConstraint baseColumnNames="posts_id" baseTableName="tag2post" constraintName="fk2sco469rq792nq6okonwupbjw" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="posts"/>
-    </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-39">
-        <addForeignKeyConstraint baseColumnNames="tags_id" baseTableName="tag2post" constraintName="fk40e89fx6nsjoaaas7pqap3unx" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tags"/>
-    </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-40">
-        <addForeignKeyConstraint baseColumnNames="posts_comments" baseTableName="users" constraintName="fk4kle83hjxro1dcldx3owm7sgx" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="post_comments"/>
-    </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-41">
-        <addForeignKeyConstraint baseColumnNames="users_id" baseTableName="post_votes" constraintName="fk7wktkigmynil8mkbrc13uv3ex" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
-    </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-42">
-        <addForeignKeyConstraint baseColumnNames="users_id" baseTableName="posts" constraintName="fkhc5cfu63utmr42sr1v1tsr7so" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
-    </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-43">
-        <addForeignKeyConstraint baseColumnNames="post_comments_id" baseTableName="posts" constraintName="fkjkgfmj86jkfgvc9yjum2nrft6" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="post_comments"/>
-    </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-44">
-        <addForeignKeyConstraint baseColumnNames="user_posts" baseTableName="posts" constraintName="fkne7w09j7o8k4kkxrg433ywhns" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
-    </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-45">
-        <addForeignKeyConstraint baseColumnNames="user_post_votes_id" baseTableName="post_votes" constraintName="fkpn324o8p3bhwujb5abb4dixko" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
-    </changeSet>
-    <changeSet author="ruslan (generated)" id="1617528102996-46">
-        <addForeignKeyConstraint baseColumnNames="moder_id" baseTableName="posts" constraintName="fktr1trwmh7tqltplqip4mfy8mh" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users"/>
     </changeSet>
 </databaseChangeLog>

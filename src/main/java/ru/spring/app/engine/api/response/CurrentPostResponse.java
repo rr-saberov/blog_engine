@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class CurrentPostResponse {
-    private int id;
+    private long id;
     private long timestamp;
     private boolean isActive;
     @JsonProperty("user")

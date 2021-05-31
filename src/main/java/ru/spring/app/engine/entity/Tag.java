@@ -2,24 +2,29 @@ package ru.spring.app.engine.entity;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
 @Table(name = "tags")
 @ApiModel(description = "data model of tags")
-public class Tags {
+public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "serial")
-    private int id;
+    private long id;
+
     @Column(nullable = false)
     private String name;
 
-    @OneToOne(mappedBy = "tagsId")
-    private Tag2Post tag2Post;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "tag2post",
+            joinColumns = @JoinColumn(name = "tag_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id"))
+    private List<Post> posts;
 
 }

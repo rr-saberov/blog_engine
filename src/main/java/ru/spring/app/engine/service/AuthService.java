@@ -1,6 +1,5 @@
 package ru.spring.app.engine.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -8,13 +7,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ru.spring.app.engine.api.request.ChangePasswordRequest;
 import ru.spring.app.engine.api.request.LoginRequest;
 import ru.spring.app.engine.api.response.AuthResponse;
 import ru.spring.app.engine.api.response.AuthUserResponse;
 import ru.spring.app.engine.api.request.RegistrationRequest;
-import ru.spring.app.engine.entity.Users;
+import ru.spring.app.engine.api.response.ChangePasswordResponse;
+import ru.spring.app.engine.api.response.RegistrationResponse;
+import ru.spring.app.engine.entity.Captcha;
+import ru.spring.app.engine.exceptions.CaptchaNotFoundException;
+import ru.spring.app.engine.exceptions.RegistrationFailedException;
+import ru.spring.app.engine.repository.CaptchaRepository;
 import ru.spring.app.engine.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 @Service
@@ -22,11 +28,12 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
+    private final CaptchaRepository captchaRepository;
 
-    @Autowired
-    public AuthService(UserRepository userRepository, AuthenticationManager authenticationManager) {
+    public AuthService(UserRepository userRepository, AuthenticationManager authenticationManager, CaptchaRepository captchaRepository) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
+        this.captchaRepository = captchaRepository;
     }
 
     public AuthResponse login(LoginRequest loginRequest) {
@@ -41,20 +48,23 @@ public class AuthService {
         return convertToResponse(name);
     }
 
-    public RegistrationRequest newUserRegistration(String email, String password, String name,
-                                                   String captcha, String captchaSecret) {
-        Users user = new Users();
-        user.setEmail(email);
-        user.setIsModerator(-1);
-        user.setPassword(password);
-        user.setName(name);
-        user.setRegTime(new Date(System.currentTimeMillis()));
-        userRepository.save(user);
-        return new RegistrationRequest(email, password, name, captcha, captchaSecret);
+    public RegistrationResponse registration(RegistrationRequest request) throws RegistrationFailedException {
+        if (userRepository.findByEmail(request.getEmail()).isEmpty()) {
+            ru.spring.app.engine.entity.User user = new ru.spring.app.engine.entity.User();
+            user.setEmail(request.getEmail());
+            user.setIsModerator(-1);
+            user.setPassword(request.getPassword());
+            user.setName(request.getName());
+            user.setRegTime(new Date(System.currentTimeMillis()));
+            userRepository.save(user);
+            return new RegistrationResponse(true, new ArrayList<>());
+        } else {
+            throw new RegistrationFailedException("Registration failed check correctness of input");
+        }
     }
 
     private AuthResponse convertToResponse(String email) {
-        Users currentUser = userRepository.findByEmail(email)
+        ru.spring.app.engine.entity.User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
         AuthUserResponse userResponse = new AuthUserResponse();
         userResponse.setEmail(currentUser.getEmail());
@@ -64,6 +74,22 @@ public class AuthService {
         AuthResponse authResponse = new AuthResponse();
         authResponse.setResult(true);
         authResponse.setAuthUserResponse(userResponse);
-        return authResponse ;
+        return authResponse;
+    }
+
+    public ChangePasswordResponse changePassword(ChangePasswordRequest request, String email) throws Throwable {
+        ChangePasswordResponse response = new ChangePasswordResponse();
+        Captcha captcha = captchaRepository
+                .findBySecretCode(request.getCaptchaSecret()).orElseThrow(() ->
+                        new CaptchaNotFoundException(request.getCaptchaSecret()));
+        if (captcha.getSecretCode().equals(request.getCaptchaSecret()) &&
+                captcha.getCode().equals(request.getCaptchaSecret()) &&
+                request.getCode().equals(userRepository.findByEmail(email))) {
+            response.setResult(true);
+        } else {
+            response.setResult(false);
+            response.setErrors(new ArrayList<>());
+        }
+        return response;
     }
 }

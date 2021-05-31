@@ -18,11 +18,14 @@ public class Captcha {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, columnDefinition = "serial")
-    private int id;
+    private long id;
+
     @Column(nullable = false)
     private Date time;
+
     @Column(nullable = false)
     private String code;
+
     @Column(nullable = false)
     private String secretCode;
 

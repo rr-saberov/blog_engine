@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class CommentResponse {
-    private int id;
+    private long id;
     private long timestamp;
     private String text;
+    private UserResponse user;
 }
