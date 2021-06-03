@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import ru.spring.app.engine.api.request.ChangePasswordRequest;
 import ru.spring.app.engine.api.response.ChangePasswordResponse;
@@ -13,6 +14,7 @@ import ru.spring.app.engine.api.response.AuthResponse;
 import ru.spring.app.engine.api.response.CaptchaResponse;
 import ru.spring.app.engine.api.request.RegistrationRequest;
 import ru.spring.app.engine.api.response.RegistrationResponse;
+import ru.spring.app.engine.exceptions.CaptchaNotFoundException;
 import ru.spring.app.engine.exceptions.RegistrationFailedException;
 import ru.spring.app.engine.service.AuthService;
 import ru.spring.app.engine.service.CaptchaService;
@@ -21,6 +23,7 @@ import ru.spring.app.engine.service.EmailService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.ArrayList;
 
 @Api
 @RestController
@@ -69,8 +72,7 @@ public class ApiAuthController {
 
     @PostMapping("/register")
     @ApiOperation("method to registration new user")
-    public ResponseEntity<RegistrationResponse> registration(
-            @RequestBody RegistrationRequest request) throws RegistrationFailedException {
+    public ResponseEntity<RegistrationResponse> registration(@RequestBody RegistrationRequest request) throws RegistrationFailedException {
         return ResponseEntity.ok(authService.registration(request));
     }
 
@@ -84,7 +86,19 @@ public class ApiAuthController {
     @PostMapping("/password")
     @ApiOperation("method to change password")
     public ResponseEntity<ChangePasswordResponse> changePassword(
-            @RequestBody ChangePasswordRequest request, Principal principal) throws Throwable {
+            @RequestBody ChangePasswordRequest request, Principal principal) throws CaptchaNotFoundException {
         return ResponseEntity.ok(authService.changePassword(request, principal.getName()));
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity.BodyBuilder handleMissingServletRequestParameterException() {
+        return ResponseEntity.badRequest();
+    }
+
+    @ExceptionHandler(RegistrationFailedException.class)
+    public ResponseEntity<RegistrationResponse> handleRegistrationFailedException() {
+        /*RegistrationResponse response = new RegistrationResponse();
+        response.s*/
+        return null;
     }
 }

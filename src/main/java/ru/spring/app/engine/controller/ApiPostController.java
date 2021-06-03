@@ -5,10 +5,12 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import ru.spring.app.engine.api.request.CommentRequest;
 import ru.spring.app.engine.api.request.PostRequest;
 import ru.spring.app.engine.api.response.*;
+import ru.spring.app.engine.exceptions.PostNotFoundException;
 import ru.spring.app.engine.service.CommentService;
 import ru.spring.app.engine.service.PostService;
 
@@ -67,8 +69,8 @@ public class ApiPostController {
 
     @GetMapping("/post/{ID}")
     @ApiOperation("method to get post by id")
-    public ResponseEntity<CurrentPostResponse> postById(@PathVariable(value = "ID") Long id) {
-        return ResponseEntity.ok(postService.getPostById(id));
+    public ResponseEntity<CurrentPostResponse> postById(@PathVariable(value = "ID") Long id) throws PostNotFoundException {
+        return ResponseEntity.ok(postService.getPostById(id));  //сделать статус 404
     }
 
     @GetMapping("/post/moderation")
@@ -89,6 +91,7 @@ public class ApiPostController {
     }
 
     @PostMapping("/moderation")
+    @PreAuthorize("hasAuthority('user:moderate')")
     public ResponseEntity<Boolean> moderatePost(@RequestParam Long id,
                                                 @RequestParam String decision) {
         Boolean result = postService.moderatePost(id, decision);
@@ -125,5 +128,15 @@ public class ApiPostController {
     public ResponseEntity<Boolean> addDislike(@RequestParam("post_id") Long postId, Principal principal) {
         Boolean result = postService.addDislike(postId, principal.getName());
         return ResponseEntity.ok(result);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity.BodyBuilder handleMissingServletRequestParameterException() {
+        return ResponseEntity.badRequest();
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity.HeadersBuilder<?> handlePostNotFoundException() {
+        return ResponseEntity.notFound();
     }
 }

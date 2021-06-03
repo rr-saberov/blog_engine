@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.request.ChangePasswordRequest;
 import ru.spring.app.engine.api.request.LoginRequest;
@@ -29,11 +30,13 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final CaptchaRepository captchaRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(UserRepository userRepository, AuthenticationManager authenticationManager, CaptchaRepository captchaRepository) {
+    public AuthService(UserRepository userRepository, AuthenticationManager authenticationManager, CaptchaRepository captchaRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.captchaRepository = captchaRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public AuthResponse login(LoginRequest loginRequest) {
@@ -49,18 +52,19 @@ public class AuthService {
     }
 
     public RegistrationResponse registration(RegistrationRequest request) throws RegistrationFailedException {
-        if (userRepository.findByEmail(request.getEmail()).isEmpty()) {
-            ru.spring.app.engine.entity.User user = new ru.spring.app.engine.entity.User();
-            user.setEmail(request.getEmail());
-            user.setIsModerator(-1);
-            user.setPassword(request.getPassword());
-            user.setName(request.getName());
-            user.setRegTime(new Date(System.currentTimeMillis()));
-            userRepository.save(user);
-            return new RegistrationResponse(true, new ArrayList<>());
-        } else {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RegistrationFailedException("Registration failed check correctness of input");
         }
+
+        ru.spring.app.engine.entity.User user = new ru.spring.app.engine.entity.User();
+        user.setEmail(request.getEmail());
+        user.setIsModerator(-1);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setName(request.getName());
+        user.setRegTime(new Date(System.currentTimeMillis()));
+        userRepository.save(user);
+        return new RegistrationResponse(true, new ArrayList<>());
+
     }
 
     private AuthResponse convertToResponse(String email) {
@@ -77,7 +81,7 @@ public class AuthService {
         return authResponse;
     }
 
-    public ChangePasswordResponse changePassword(ChangePasswordRequest request, String email) throws Throwable {
+    public ChangePasswordResponse changePassword(ChangePasswordRequest request, String email) throws CaptchaNotFoundException {
         ChangePasswordResponse response = new ChangePasswordResponse();
         Captcha captcha = captchaRepository
                 .findBySecretCode(request.getCaptchaSecret()).orElseThrow(() ->

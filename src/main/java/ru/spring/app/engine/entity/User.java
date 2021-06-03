@@ -29,7 +29,7 @@ public class User {
     private Date regTime;
 
     @Column(nullable = false)
-    @Size(min = 4, max = 15)
+    @Size(min = 4, max = 25)
 //    @Pattern(regexp = "[^0-9\\p{all}]")
     private String name;
 
@@ -38,9 +38,8 @@ public class User {
     private String email;
 
     @Column(nullable = false, columnDefinition = "text")
-    @Size(min = 8, max = 25)
+/*    @Size(min = 6, max = 25)*/
 //    @Pattern(regexp = "[^а-яА-Я]")
-
     private String password;
 
     private String code;

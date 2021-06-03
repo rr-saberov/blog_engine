@@ -6,7 +6,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.spring.app.engine.api.request.EditProfileRequest;
+import ru.spring.app.engine.api.request.SettingsRequest;
 import ru.spring.app.engine.api.response.*;
+import ru.spring.app.engine.exceptions.AccessIsDeniedException;
 import ru.spring.app.engine.service.ImageStorage;
 import ru.spring.app.engine.service.PostService;
 import ru.spring.app.engine.service.SettingsService;
@@ -45,6 +47,12 @@ public class ApiGeneralController {
         return ResponseEntity.ok(settingsService.getGlobalSettings());
     }
 
+    @PutMapping("/settings")
+    @PreAuthorize("hasAuthority('user:moderate')")
+    public ResponseEntity<Boolean> updateSettings(SettingsRequest request) {
+        return ResponseEntity.ok(settingsService.updateGlobalSettings(request));
+    }
+
     @GetMapping("/calendar")
     public ResponseEntity<CalendarResponse> getPostCountInYear(@RequestParam(defaultValue = "") Integer year) {
         return ResponseEntity.ok(postService.getPostsCountInTheYear(year));
@@ -63,13 +71,25 @@ public class ApiGeneralController {
         return ResponseEntity.ok(userService.updateProfile(request, principal));
     }
 
-    @GetMapping("/statistics/all")
-    @PreAuthorize("hasAuthority('user:moderate')")
-    public ResponseEntity<StatisticsResponse> getStatistics(Principal principal) throws Exception {
+    @GetMapping("/statistics/my")
+    @PreAuthorize("hasAuthority('user:write')")  /*TODO: переделать*/
+    public ResponseEntity<StatisticsResponse> getMyStatistics(Principal principal) throws AccessIsDeniedException {
         if (settingsService.getGlobalSettings().isStatisticsIsPublic()) {
             return ResponseEntity.ok(postService.getStatistics(principal.getName()));
         } else {
-            throw new Exception();
+            throw new AccessIsDeniedException("access is denied");
         }
     }
+
+    @GetMapping("/statistics/all")
+    @PreAuthorize("hasAuthority('user:moderate')")
+    public ResponseEntity<StatisticsResponse> getStatistics(Principal principal) throws AccessIsDeniedException {
+        if (settingsService.getGlobalSettings().isStatisticsIsPublic()) {
+            return ResponseEntity.ok(postService.getStatistics(principal.getName()));
+        } else {
+            throw new AccessIsDeniedException("access is denied");
+        }
+    }
+
+
 }

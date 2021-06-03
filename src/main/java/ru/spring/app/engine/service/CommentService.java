@@ -12,6 +12,7 @@ import ru.spring.app.engine.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class CommentService {
@@ -30,7 +31,7 @@ public class CommentService {
         AddCommentResponse response = new AddCommentResponse();
         if (commentsRepository.findById(comment.getParentId()).isPresent()
                 || postRepository.findById(comment.getPostId()).isPresent() && comment.getText().length() > 10) {
-            response.setId(commentsRepository.findAll().size() + 1);
+            response.setId(new Random().nextLong());
             commentsRepository.save(convertRequestToPostComments(comment, email));
         } else {
             response.setResult(false);
@@ -44,8 +45,7 @@ public class CommentService {
         postComments.setParentId(comment.getParentId());
         postComments.setPostId(comment.getPostId());
         postComments.setText(comment.getText());
-        postComments.setTime(new Date());
-        postComments.setId(commentsRepository.findAll().size() + 1);
+        postComments.setTime(new Date(System.currentTimeMillis() / 1000)); /*TODO: разобраться со временем*/
         postComments.setUserId(userRepository.getUserIdByEmail(email));
         return postComments;
     }
