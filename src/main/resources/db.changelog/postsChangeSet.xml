@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="14434343333" author="Ruslan">
+
+        <insert tableName="posts">
+            <column name="is_active" value="1"/>
+            <column name="moderation_status" value="DECLINED"/>
+            <column name="time" value="2005-04-03 20:00:00"/>
+            <column name="text" value="simple post"/>
+            <column name="view_count" value="5"/>
+            <column name="user_id" value="1"/>
+            <column name="view_count" value="2"/>
+            <column name="moderator_id" value="1"/>
+        </insert>
+
+        <insert tableName="posts">
+            <column name="is_active" value="1"/>
+            <column name="moderation_status" value="NEW"/>
+            <column name="time" value="2021-01-01 20:00:00"/>
+            <column name="text" value="post about jUnit"/>
+            <column name="view_count" value="3"/>
+            <column name="user_id" value="1"/>
+            <column name="view_count" value="2"/>
+            <column name="moderator_id" value="1"/>
+        </insert>
+
+        <insert tableName="posts">
+            <column name="is_active" value="-1"/>
+            <column name="moderation_status" value="ACCEPTED"/>
+            <column name="time" value="2020-10-09 20:00:00"/>
+            <column name="text" value="post about C++"/>
+            <column name="view_count" value="4"/>
+            <column name="user_id" value="1"/>
+            <column name="view_count" value="2"/>
+            <column name="moderator_id" value="1"/>
+        </insert>
+
+        <insert tableName="posts">
+            <column name="is_active" value="1"/>
+            <column name="moderation_status" value="ACCEPTED"/>
+            <column name="time" value="2021-01-05 20:00:00"/>
+            <column name="text" value="post about java"/>
+            <column name="view_count" value="3"/>
+            <column name="user_id" value="2"/>
+            <column name="view_count" value="2"/>
+            <column name="moderator_id" value="1"/>
+        </insert>
+
+        <insert tableName="posts">
+            <column name="is_active" value="1"/>
+            <column name="moderation_status" value="ACCEPTED"/>
+            <column name="time" value="2020-01-05 20:00:00"/>
+            <column name="text" value="post about kotlin"/>
+            <column name="view_count" value="3"/>
+            <column name="user_id" value="2"/>
+            <column name="view_count" value="2"/>
+            <column name="moderator_id" value="1"/>
+        </insert>
+
+        <insert tableName="posts">
+            <column name="is_active" value="1"/>
+            <column name="moderation_status" value="ACCEPTED"/>
+            <column name="time" value="2019-01-05 20:00:00"/>
+            <column name="text" value="post about Golang"/>
+            <column name="view_count" value="3"/>
+            <column name="user_id" value="2"/>
+            <column name="view_count" value="2"/>
+            <column name="moderator_id" value="1"/>
+        </insert>
+
+        <insert tableName="posts">
+            <column name="is_active" value="1"/>
+            <column name="moderation_status" value="ACCEPTED"/>
+            <column name="time" value="2020-01-05 20:00:00"/>
+            <column name="text" value="post about TypeScript"/>
+            <column name="view_count" value="3"/>
+            <column name="user_id" value="1"/>
+            <column name="view_count" value="2"/>
+            <column name="moderator_id" value="1"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>
