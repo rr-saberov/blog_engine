@@ -63,7 +63,7 @@ public class ApiPostController {
     public ResponseEntity<PostsResponse> getPostsByTag(
             @RequestParam(defaultValue = "0") Integer offset,
             @RequestParam(defaultValue = "10") Integer limit,
-            @RequestParam(defaultValue = "tag name") String tag) {
+            @RequestParam(defaultValue = "java") String tag) {
         return ResponseEntity.ok(postService.getPostsByTag(offset, limit, tag));
     }
 
@@ -77,7 +77,7 @@ public class ApiPostController {
     @PreAuthorize("hasAuthority('user:moderate')")
     public ResponseEntity<PostsResponse> postsForModeration(@RequestParam(defaultValue = "0") Integer offset,
                                                             @RequestParam(defaultValue = "10") Integer limit,
-                                                            @RequestParam(defaultValue = "ACCEPTED") String status) {
+                                                            @RequestParam/*(defaultValue = "ACCEPTED") */String status) {
         return ResponseEntity.ok(postService.getPostsForModeration(offset, limit, status));
     }
 

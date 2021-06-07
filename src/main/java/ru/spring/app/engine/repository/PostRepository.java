@@ -45,12 +45,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("FROM Post p " +
             "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' AND p.time <= CURRENT_DATE " +
-            "ORDER BY p.time")
+            "ORDER BY p.time DESC")
     Page<Post> getPostsOrderByTime(Pageable pageable);
 
     @Query("FROM Post p " +
             "WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' AND p.time <= CURRENT_DATE " +
-            "ORDER BY p.time DESC")
+            "ORDER BY p.time")
     Page<Post> getOldPostsOrderByTime(Pageable pageable);
 
     @Query(value = "SELECT * " +
@@ -114,7 +114,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "WHERE pv.postId = :id")
     List<PostVotes> getVotesForPost(@Param("id") Long id);
 
-    @Query(value = "SELECT name " +
+    @Query(value = "SELECT DISTINCT name " +
             "FROM users " +
             "LEFT JOIN posts on posts.user_id = users.id " +
             "WHERE users.id = :id ", nativeQuery = true)
