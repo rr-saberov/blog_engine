@@ -30,7 +30,6 @@ public class User {
 
     @Column(nullable = false)
     @Size(min = 4, max = 25)
-    @Pattern(regexp = "[^0-9\\p{Punct}]")
     private String name;
 
     @Column(nullable = false, columnDefinition = "text")
