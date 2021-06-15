@@ -11,4 +11,6 @@
     <include file="db.changelog/ModStatusChangeSet.xml"/>
     <include file="db.changelog/globalSettingsChange.xml"/>
     <include file="db.changelog/testDataChangeSet.xml"/>
+    <include file="db.changelog\postsChangeSet.xml"/>
+    <include file="db.changelog/tagsChangeSet.xml"/>
 </databaseChangeLog>

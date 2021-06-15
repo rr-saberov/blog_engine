@@ -23,7 +23,7 @@
             <column name="id" value="3"/>
             <column name="code" value="STATISTICS_IS_PUBLIC"/>
             <column name="name" value="Показывать всем статистику блога"/>
-            <column name="value" value="NO"/>
+            <column name="value" value="YES"/>
         </insert>
 
     </changeSet>

@@ -28,14 +28,17 @@ public class CommentService {
 
     public AddCommentResponse addComment(CommentRequest comment, String email) {
         AddCommentResponse response = new AddCommentResponse();
+
         if (commentsRepository.findById(comment.getParentId()).isPresent()
-                || postRepository.findById(comment.getPostId()).isPresent() && comment.getText().length() > 10) {
-            response.setId(commentsRepository.findAll().size() + 1);
+                || postRepository.findById(comment.getPostId()).isPresent()) {
             commentsRepository.save(convertRequestToPostComments(comment, email));
+            response.setId(commentsRepository.findByText(comment.getText()).getId());
+            response.setResult(true);
         } else {
             response.setResult(false);
             response.setErrors(addErrorsToList(comment));
         }
+
         return response;
     }
 
@@ -44,20 +47,22 @@ public class CommentService {
         postComments.setParentId(comment.getParentId());
         postComments.setPostId(comment.getPostId());
         postComments.setText(comment.getText());
-        postComments.setTime(new Date());
-        postComments.setId(commentsRepository.findAll().size() + 1);
+        postComments.setTime(new Date(System.currentTimeMillis()));
         postComments.setUserId(userRepository.getUserIdByEmail(email));
         return postComments;
     }
 
     private List<AddCommentErrors> addErrorsToList(CommentRequest comment) {
         List<AddCommentErrors> errors = new ArrayList<>();
+
         if (commentsRepository.findById(comment.getParentId()).isEmpty()) {
             errors.add(new AddCommentErrors("add fail, no comment with such id"));
         }
+
         if (postRepository.findById(comment.getPostId()).isEmpty()) {
             errors.add(new AddCommentErrors("add fail, no post with such id"));
         }
+
         if (comment.getText().length() <= 10) {
             errors.add(new AddCommentErrors("add fail, the text is too short"));
         }

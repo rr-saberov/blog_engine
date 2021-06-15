@@ -3,19 +3,14 @@ package ru.spring.app.engine.service;
 import com.github.cage.Cage;
 import com.github.cage.GCage;
 import net.bytebuddy.utility.RandomString;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.response.CaptchaResponse;
 import ru.spring.app.engine.entity.Captcha;
 import ru.spring.app.engine.repository.CaptchaRepository;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Base64;
 import java.util.Date;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class CaptchaService {
@@ -38,15 +33,14 @@ public class CaptchaService {
         return new CaptchaResponse(secretCode, encodedString);
     }
 
-    public boolean validCaptcha(String secretCode) throws IOException {
+    public boolean validCaptcha(String secretCode, String currentCaptcha) {
         generateCaptcha();
-        Captcha captcha = captchaRepository.findAll().stream()
-                .filter(el -> el.getSecretCode().equals(secretCode)).collect(Collectors.toList()).get(0);
-
-        byte[] decodedBytes = Base64.getDecoder().decode(captcha.getSecretCode());
-        FileUtils.writeByteArrayToFile(new File("captcha"), decodedBytes);
-
-        return captcha.getSecretCode().equals(secretCode);
+        if (captchaRepository.findBySecretCode(secretCode).isPresent()) {
+            Captcha captcha = captchaRepository.findBySecretCode(secretCode).get();
+            return captcha.getCode().equals(currentCaptcha);
+        } else {
+            return false;
+        }
     }
 
     private void restoreOldCaptcha() {

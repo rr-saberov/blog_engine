@@ -1,7 +1,7 @@
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/engine_test?&useSSL=false&serverTimezone=UTC
+    url: jdbc:postgresql://localhost:5432/engine?&useSSL=false&serverTimezone=UTC
     username: postgres
     password: postgres
     initialization-mode: always
@@ -34,4 +34,4 @@ blog:
   copyrightFrom: 2020
 
 upload:
-  path: /src/main/resources/upload
+  path: C:\Users\rusa0621\Documents\Projects\Engine\blog_engine\src\main\resources\upload

@@ -29,8 +29,7 @@ public class User {
     private Date regTime;
 
     @Column(nullable = false)
-    @Size(min = 4, max = 15)
-//    @Pattern(regexp = "[^0-9\\p{all}]")
+    @Size(min = 4, max = 25)
     private String name;
 
     @Column(nullable = false, columnDefinition = "text")
@@ -38,9 +37,8 @@ public class User {
     private String email;
 
     @Column(nullable = false, columnDefinition = "text")
-    @Size(min = 8, max = 25)
-//    @Pattern(regexp = "[^а-яА-Я]")
-
+    @Size(min = 6, max = 25)
+    @Pattern(regexp = "[^а-яА-Я]")
     private String password;
 
     private String code;
@@ -51,6 +49,4 @@ public class User {
     public Role getRole() {
         return isModerator == 1 ? Role.MODERATOR : Role.USER;
     }
-
-
 }

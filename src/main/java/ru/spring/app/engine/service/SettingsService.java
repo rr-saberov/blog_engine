@@ -1,7 +1,7 @@
 package ru.spring.app.engine.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.spring.app.engine.api.request.SettingsRequest;
 import ru.spring.app.engine.api.response.SettingsResponse;
 import ru.spring.app.engine.entity.GlobalSettings;
 import ru.spring.app.engine.repository.GlobalSettingsRepository;
@@ -26,5 +26,36 @@ public class SettingsService {
         settingsResponse.setPostPremoderation(map.get("POST_MODERATION"));
         settingsResponse.setStatisticsIsPublic(map.get("STATISTICS_IS_PUBLIC"));
         return settingsResponse;
+    }
+
+    public Boolean updateGlobalSettings(SettingsRequest request) {
+        updateMultiuserMode(request.isMultiuserMode());
+        updatePostPremoderation(request.isPostPremoderation());
+        updateStatisticIsPublic(request.isStatisticsIsPublic());
+        return true;
+    }
+
+    private void updateMultiuserMode(boolean result) {
+        if (result) {
+            settingsRepository.updateMultiUserMode("YES");
+        } else {
+            settingsRepository.updateMultiUserMode("NO");
+        }
+    }
+
+    private void updatePostPremoderation(boolean result) {
+        if (result) {
+            settingsRepository.updatePostPreModeration("YES");
+        } else {
+            settingsRepository.updatePostPreModeration("NO");
+        }
+    }
+
+    private void updateStatisticIsPublic(boolean result) {
+        if (result) {
+            settingsRepository.updateStatisticIsPublic("YES");
+        } else {
+            settingsRepository.updateStatisticIsPublic("NO");
+        }
     }
 }

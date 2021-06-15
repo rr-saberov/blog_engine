@@ -6,20 +6,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.spring.app.engine.api.request.PostRequest;
 import ru.spring.app.engine.api.response.*;
-import ru.spring.app.engine.entity.User;
-import ru.spring.app.engine.entity.enums.ModerationStatus;
+import ru.spring.app.engine.api.response.errors.AddPostErrors;
 import ru.spring.app.engine.entity.Post;
 import ru.spring.app.engine.entity.Tag;
+import ru.spring.app.engine.entity.User;
+import ru.spring.app.engine.entity.enums.ModerationStatus;
 import ru.spring.app.engine.exceptions.AccessIsDeniedException;
+import ru.spring.app.engine.exceptions.PostNotFoundException;
 import ru.spring.app.engine.repository.PostRepository;
 import ru.spring.app.engine.repository.PostVotesRepository;
 import ru.spring.app.engine.repository.TagRepository;
 import ru.spring.app.engine.repository.UserRepository;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class PostService {
@@ -121,20 +125,54 @@ public class PostService {
         return calendarResponse;
     }
 
-    public CurrentPostResponse getPostById(Long id) {
-        postRepository.updatePostInfo(postRepository.getPostsById(id).getViewCount() + 1, id);
-        return convertPostToCurrentPostResponse(postRepository.getPostsById(id));
+    public CurrentPostResponse getPostById(Long id) throws PostNotFoundException {
+        if (postRepository.findById(id).isPresent()) {
+            postRepository.updatePostInfo(postRepository.getPostsById(id).getViewCount() + 1, id);
+            return convertPostToCurrentPostResponse(postRepository.getPostsById(id));
+        } else  {
+            throw new PostNotFoundException("post with id: " + id + " not found");
+        }
     }
 
     public AddPostResponse addNewPost(PostRequest request) {
-        savePostFromRequest(request);
+        List<AddPostErrors> errors = new ArrayList<>();
         AddPostResponse response = new AddPostResponse();
+
+        if (request.getTitle().isEmpty()) {
+            AddPostErrors titleError = new AddPostErrors("title", "Заголовок не установлен");
+            errors.add(titleError);
+            response.setResult(false);
+            response.setErrors(errors);
+        } else if (request.getText().length() < 25) {
+            AddPostErrors textError = new AddPostErrors("title", "Заголовок не установлен");
+            errors.add(textError);
+            response.setResult(false);
+            response.setErrors(errors);
+        } else {
+            savePostFromRequest(request);
+            response.setResult(true);
+        }
+
         return response;
     }
 
     public AddPostResponse updatePost(Long id, PostRequest request) {
-        savePostFromRequest(request, id);
+        List<AddPostErrors> errors = new ArrayList<>();
         AddPostResponse response = new AddPostResponse();
+        if (request.getTitle().isEmpty()) {
+            AddPostErrors titleError = new AddPostErrors("title", "Заголовок не установлен");
+            errors.add(titleError);
+            response.setResult(false);
+            response.setErrors(errors);
+        } else if (request.getText().length() < 25) {
+            AddPostErrors textError = new AddPostErrors("title", "Заголовок не установлен");
+            errors.add(textError);
+            response.setResult(false);
+            response.setErrors(errors);
+        } else {
+            savePostFromRequest(request, id);
+            response.setResult(true);
+        }
         return response;
     }
 
@@ -148,20 +186,29 @@ public class PostService {
             response.setFirstPublication(postRepository.getPostsOrderByTime().get(0).getTime().getTime());
             return response;
         } else {
-            throw new AccessIsDeniedException("");
+            throw new AccessIsDeniedException("access to statistic is denied");
         }
+    }
+
+    public StatisticsResponse getUserStatistics(String email) {
+        StatisticsResponse response = new StatisticsResponse();
+        User currentUser = userRepository.findByEmail(email).get();
+        response.setPostsCount(postRepository.findAll().stream().filter(post -> post.getUserId() == currentUser.getId()).count());
+        response.setViewCount(postRepository.getViewCountOnUserPosts(currentUser.getId()));
+        response.setLikesCount(postRepository.getLikesCountForUserPosts(currentUser.getId()));
+        response.setDislikesCount(postRepository.getDislikesCountForUserPosts(currentUser.getId()));
+        response.setFirstPublication(postRepository.getUsersPostsOrderByTime(currentUser.getId()).get(0).getTime().getTime());
+        return response;
     }
 
     public Boolean addLike(Long postId, String email) {
         User currentUser = userRepository.findByEmail(email).get();
-        if (postVotesRepository.findByUserId(currentUser.getId()).getValue() == - 1) {
-            postVotesRepository.changeDislikeToLike(currentUser.getId());
-            return true;
-        }
-        else if (postVotesRepository.findByUserId(currentUser.getId()).getValue() == 1) {
-            return false;
-        }
-        else {
+        if (postVotesRepository.findByUserId(currentUser.getId()).isPresent()) {
+            if (postVotesRepository.findByUserId(currentUser.getId()).get().getValue() == -1) {
+                postVotesRepository.changeDislikeToLike(currentUser.getId());
+                return true;
+            } else return postVotesRepository.findByUserId(currentUser.getId()).get().getValue() != 1;
+        } else {
             postVotesRepository.addLike(postId, new Date(System.currentTimeMillis()), currentUser.getId());
             return true;
         }
@@ -169,12 +216,11 @@ public class PostService {
 
     public Boolean addDislike(Long postId, String email) {
         User currentUser = userRepository.findByEmail(email).get();
-        if (postVotesRepository.findByUserId(currentUser.getId()).getValue() == - 1) {
-            return false;
-        }
-        else if (postVotesRepository.findByUserId(currentUser.getId()).getValue() == 1) {
-            postVotesRepository.changeLikeToDislike(currentUser.getId());
-            return true;
+        if (postVotesRepository.findByUserId(currentUser.getId()).isPresent()) {
+            if (postVotesRepository.findByUserId(currentUser.getId()).get().getValue() == 1) {
+                postVotesRepository.changeLikeToDislike(currentUser.getId());
+                return true;
+            } else return postVotesRepository.findByUserId(currentUser.getId()).get().getValue() != -1;
         }
         else {
             postVotesRepository.addDislike(postId, new Date(System.currentTimeMillis()), currentUser.getId());
@@ -262,11 +308,14 @@ public class PostService {
 
     private CalendarResponse convertMapToResponse() {
         CalendarResponse calendarResponse = new CalendarResponse();
+        List<Integer> years = new ArrayList<>();
         List<PostInDayResponse> postInDayResponses = new ArrayList<>();
-        postRepository.getPostsCountOnTheDay().forEach((key, value) -> {
+        postRepository.getPostsCountInYear().forEach((key, value) -> {
             PostInDayResponse response = new PostInDayResponse(key, value);
+            years.add(key);
             postInDayResponses.add(response);
         });
+        calendarResponse.setYears(years.stream().mapToInt(Integer::intValue).toArray());
         calendarResponse.setPosts(postInDayResponses);
         return calendarResponse;
     }
@@ -278,6 +327,7 @@ public class PostService {
             PostInDayResponse response = new PostInDayResponse(key, value);
             postInDayResponses.add(response);
         });
+        calendarResponse.setYears(new int[year]);
         calendarResponse.setPosts(postInDayResponses);
         return calendarResponse;
     }

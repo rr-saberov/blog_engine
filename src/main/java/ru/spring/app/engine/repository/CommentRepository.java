@@ -7,4 +7,5 @@ import ru.spring.app.engine.entity.PostComments;
 @Repository
 public interface CommentRepository extends JpaRepository<PostComments, Long> {
 
+    PostComments findByText(String text);
 }
