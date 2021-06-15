@@ -54,7 +54,7 @@ public class ApiGeneralController {
     }
 
     @GetMapping("/calendar")
-    public ResponseEntity<CalendarResponse> getPostCountInYear(@RequestParam(defaultValue = "") Integer year) {
+    public ResponseEntity<CalendarResponse> getPostCountInYear(@RequestParam(defaultValue = "2021") Integer year) {
         return ResponseEntity.ok(postService.getPostsCountInTheYear(year));
     }
 
@@ -68,17 +68,13 @@ public class ApiGeneralController {
     @PostMapping("/profile/my")
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<EditProfileResponse> editProfile(@RequestBody EditProfileRequest request, Principal principal) {
-        return ResponseEntity.ok(userService.updateProfile(request, principal));
+        return ResponseEntity.ok(userService.editProfile(request, principal));
     }
 
     @GetMapping("/statistics/my")
-    @PreAuthorize("hasAuthority('user:write')")  /*TODO: переделать*/
-    public ResponseEntity<StatisticsResponse> getMyStatistics(Principal principal) throws AccessIsDeniedException {
-        if (settingsService.getGlobalSettings().isStatisticsIsPublic()) {
-            return ResponseEntity.ok(postService.getStatistics(principal.getName()));
-        } else {
-            throw new AccessIsDeniedException("access is denied");
-        }
+    @PreAuthorize("hasAuthority('user:write')")
+    public ResponseEntity<StatisticsResponse> getMyStatistics(Principal principal) {
+        return ResponseEntity.ok(postService.getUserStatistics(principal.getName()));
     }
 
     @GetMapping("/statistics/all")
@@ -90,6 +86,4 @@ public class ApiGeneralController {
             throw new AccessIsDeniedException("access is denied");
         }
     }
-
-
 }

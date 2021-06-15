@@ -9,7 +9,7 @@ import ru.spring.app.engine.repository.UserRepository;
 @Service
 public class EmailService {
 
-    public JavaMailSender emailSender;
+    private final JavaMailSender emailSender;
     private final UserRepository userRepository;
 
     public EmailService(JavaMailSender emailSender, UserRepository userRepository) {

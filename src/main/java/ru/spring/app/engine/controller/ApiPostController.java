@@ -18,8 +18,8 @@ import java.security.Principal;
 import java.util.Date;
 
 @RestController
-@Api("post controller for rest api")
 @RequestMapping("/api")
+@Api("post controller for rest api")
 public class ApiPostController {
 
     private final PostService postService;
@@ -73,15 +73,17 @@ public class ApiPostController {
         return ResponseEntity.ok(postService.getPostById(id));  //сделать статус 404
     }
 
-    @GetMapping("/post/moderation")
+    @GetMapping("/post/moderation/")
+    @ApiOperation("method to get posts for moderation")
     @PreAuthorize("hasAuthority('user:moderate')")
     public ResponseEntity<PostsResponse> postsForModeration(@RequestParam(defaultValue = "0") Integer offset,
                                                             @RequestParam(defaultValue = "10") Integer limit,
-                                                            @RequestParam/*(defaultValue = "ACCEPTED") */String status) {
+                                                            @RequestParam(defaultValue = "ACCEPTED") String status) {
         return ResponseEntity.ok(postService.getPostsForModeration(offset, limit, status));
     }
 
     @GetMapping("/post/my")
+    @ApiOperation("method to get users posts")
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<PostsResponse> userPosts(@RequestParam(defaultValue = "0") Integer offset,
                                                    @RequestParam(defaultValue = "10") Integer limit,
@@ -90,53 +92,48 @@ public class ApiPostController {
         return ResponseEntity.ok(postService.getUserPosts(offset, limit, status, principal.getName()));
     }
 
-    @PostMapping("/moderation")
+    @PostMapping("/post/moderation")
+    @ApiOperation("method to moderate post")
     @PreAuthorize("hasAuthority('user:moderate')")
-    public ResponseEntity<Boolean> moderatePost(@RequestParam Long id,
-                                                @RequestParam String decision) {
+    public ResponseEntity<Boolean> moderatePost(@RequestParam Long id, @RequestParam String decision) {
         Boolean result = postService.moderatePost(id, decision);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/post")
+    @ApiOperation("method to add new post")
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<AddPostResponse> addPost(@RequestBody PostRequest request) {
         return ResponseEntity.ok(postService.addNewPost(request));
     }
 
     @PutMapping("/post/{ID}")
+    @ApiOperation("method to update post")
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<AddPostResponse> updatePost(@PathVariable("ID") Long id, @RequestBody PostRequest request) {
         return ResponseEntity.ok(postService.updatePost(id, request));
     }
 
     @PostMapping("/comment")
+    @ApiOperation("method to add comment")
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<AddCommentResponse> addComment(@RequestBody CommentRequest comment, Principal principal) {
         return ResponseEntity.ok(commentsService.addComment(comment, principal.getName()));
     }
 
-    @GetMapping("/post/like")
+    @PostMapping("/post/like")
+    @ApiOperation("method to add like")
     @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<Boolean> addLike(@RequestParam("post_id") Long postId, Principal principal) {
+    public ResponseEntity<Boolean> addLike(@RequestParam Long postId, Principal principal) {
         Boolean result = postService.addLike(postId, principal.getName());
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/post/dislike")
+    @PostMapping("/post/dislike")
+    @ApiOperation("method to add dislike")
     @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<Boolean> addDislike(@RequestParam("post_id") Long postId, Principal principal) {
+    public ResponseEntity<Boolean> addDislike(@RequestParam Long postId, Principal principal) {
         Boolean result = postService.addDislike(postId, principal.getName());
         return ResponseEntity.ok(result);
-    }
-
-    @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity.BodyBuilder handleMissingServletRequestParameterException() {
-        return ResponseEntity.badRequest();
-    }
-
-    @ExceptionHandler(PostNotFoundException.class)
-    public ResponseEntity.HeadersBuilder<?> handlePostNotFoundException() {
-        return ResponseEntity.notFound();
     }
 }

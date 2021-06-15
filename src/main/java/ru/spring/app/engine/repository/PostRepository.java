@@ -1,6 +1,5 @@
 package ru.spring.app.engine.repository;
 
-import org.hibernate.sql.Select;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -130,7 +129,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "WHERE is_active = 1 AND moderation_status = 'ACCEPTED' AND time <= current_date " +
             "GROUP BY year " +
             "ORDER BY year", nativeQuery = true)
-    Map<Integer, Long> getPostsCountOnTheDay();
+    Map<Integer, Long> getPostsCountInYear();
 
     @Query(value = "SELECT date_part('year', time)::int as year, COUNT(*) as amount_posts " +
             "FROM posts " +
@@ -152,6 +151,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query(value = "SELECT SUM (view_count) FROM posts", nativeQuery = true)
     long getTotalViewCount();
 
+    @Query(value = "SELECT SUM (view_count) FROM posts WHERE user_id = :id", nativeQuery = true)
+    long getViewCountOnUserPosts(@Param("id") Long id);
+
     @Query(value = "SELECT COUNT(id) " +
             "FROM post_votes " +
             "WHERE value = 1", nativeQuery = true)
@@ -159,12 +161,29 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query(value = "SELECT COUNT(id) " +
             "FROM post_votes " +
+            "WHERE value = 1 AND user_id = :id", nativeQuery = true)
+    long getLikesCountForUserPosts(@Param("id") Long id);
+
+    @Query(value = "SELECT COUNT(id) " +
+            "FROM post_votes " +
             "WHERE value = -1", nativeQuery = true)
     long getTotalDislikesCount();
+
+    @Query(value = "SELECT COUNT(id) " +
+            "FROM post_votes " +
+            "WHERE value = -1 AND user_id = :id", nativeQuery = true)
+    long getDislikesCountForUserPosts(@Param("id") Long id);
 
     @Query("SELECT p " +
             "FROM Post p " +
             "ORDER BY p.time")
     List<Post> getPostsOrderByTime();
+
+    @Query("SELECT p " +
+            "FROM Post p " +
+            "WHERE p.userId = :id " +
+            "ORDER BY p.time")
+    List<Post> getUsersPostsOrderByTime(@Param("id") Long id);
+
 }
 
